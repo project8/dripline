@@ -6,6 +6,7 @@
 * wiki: this document
 * the included README file and comments in the code are also useful
 * the [erlang debugger](http://erldocs.com/R13B02/runtime_tools/dbg.html)
+* Some useful erlang shell references are collected in the [[Erlang Shell Quick Reference]]
 
 ## Getting Started
 * [Rebar](http://www.github.com/basho/rebar) is the required build system. It will download and build all other required dependencies.
