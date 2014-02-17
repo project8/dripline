@@ -1,6 +1,7 @@
 ## Table of Contents   
-[Starting/Stop](#StartStop)  
+[Starting & Stop](#StartStop)  
 [Monitor instrument](#monitor)  
+[Hot update source file](#compile)  
 
 <a name="StartStop"/>
 ### Starting and stopping
@@ -36,3 +37,14 @@
     ```erlang
     >> dbg:stop().
     ```
+
+<a name="compile"/>
+### Compile and load source file
+* Compile the file (Note, the file's .erl extension is not required).
+
+    ```erlang
+    >> c("../../apps/dl_core/src/<some>/<file>").
+    ```
+
+* Note1 that this will compile a new beam file and load it, but does *not* add that file to the build of the current release. You need to return to the root of the source tree and `$ make release` so to ensure the next time you restart dripline, the changes remain in place.
+* Note2 don't forget to commit and push your changes, we have a tendency to not save and/or propagate them across nodes.
