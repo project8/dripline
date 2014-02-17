@@ -9,13 +9,13 @@ We assume that you already have some basics ([erlang](www.erlang.org), [git](www
 
 1. Start by either cloning the dripline repo or downloading and unpacking the tarball. For the purposes of this guide, $TOP will refer to the top level directory of the repo/source tree.
 
-    ```
+    ```shell
     $ git clone git@github.com:project8/dripline
     ```
 
 2. Copy or place a symbolic link to the rebar executable in $TOP. The "release" make target should use rebar to clone and build all of dripline's dependencies as well as building dripline itself.
 
-    ```
+    ```shell
     $ make release
     ```
 
@@ -26,7 +26,7 @@ We assume that you already have some basics ([erlang](www.erlang.org), [git](www
 
 3. Now just start dripline console and watch the magic.
 
-    ```
+    ```shell
     $ ./rel/dripline/bin/dripline console
     ```
 
