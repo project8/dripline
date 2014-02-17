@@ -1,12 +1,13 @@
 ## Table of Contents   
 [Bus](#bus)  
+[Instrument](#instrument)  
 [Channel](#channel)  
 
 I'll enclose in angle braces '<' and '>' fields the user should change for the particular element (most of these should be obvious.
 
 <a name="bus"/>
 ## Bus
-Each bus must have a unique configuration with name.
+A bus is a connection to the dripline node. It may provide a means of communication with multiple instruments.
 
 ```json
 {  
@@ -21,6 +22,20 @@ Each bus must have a unique configuration with name.
    "module": "<name>",  
    "node": "<node.domain.ext>"  
 }  
+```
+
+<a name="instrument"/>
+## Instrument
+An instrument is a physical box/component. It communicates over a bus and may respond to requests on several channels.
+```
+{
+   "_id": "55023fce96bdb7219bafbd8c95003100",
+   "_rev": "5-0607f7c6dedd59e4989c6b4735c5d807",
+   "instrument_model": "agilent34970a",
+   "bus": "prologix/left_box:9",
+   "type": "instrument",
+   "name": "adc_mux"
+}
 ```
 
 <a name="channel"/>
