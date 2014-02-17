@@ -1,3 +1,9 @@
+## Table of Contents   
+[Building from source](#build)  
+[Configuration](#config)
+[Tips & Tricks](#tips)
+
+<a name="build"/>
 ## Getting the source and building
 We assume that you already have some basics ([erlang](www.erlang.org), [git](www.git-scm.com), [make](www.gnu.org/software/make/), [rebar](www.github.com/basho/rebar))installed. If not you can visit their respective project homepages for more information.
 
@@ -13,6 +19,7 @@ We assume that you already have some basics ([erlang](www.erlang.org), [git](www
     $ make release
     ```
 
+<a name="config"/>
 ## Configuration and starting the node
 1. _There are some steps to configure the local dripline node so that it knows its name and where to look for couch_
 2. _For completeness, there should be descriptions of the couch config database docs as well_
@@ -23,5 +30,6 @@ We assume that you already have some basics ([erlang](www.erlang.org), [git](www
     $ ./rel/dripline/bin/dripline console
     ```
 
+<a name="tips"/>
 ## Other Tips
 1. This should be obvious, but run dripline in either a [tmux](www.tmux.sourceforge.net) or [screen](www.gnu.org/software/screen) session. This allows you to reconnect to the erlang shell for trouble shooting without keeping a blocked terminal in your way.
