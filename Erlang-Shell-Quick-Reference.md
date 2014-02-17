@@ -1,3 +1,9 @@
+
+## Table of Contents|   
+[Starting/Stop](#StartStop)  
+[Monitor instrument](#monitor)  
+
+<a name="StartStop"/>
 ### Starting and stopping
 * Start the dripline console from the top of the dripline source tree (assumes a successful [build](Setup and Configuration)).
 
@@ -11,6 +17,7 @@
     >> q().
     ```
 
+<a name="monitor"/>
 ### Monitor a particular instrument
 1. For help determining the name of the instrument of interest
 
