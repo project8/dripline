@@ -1,5 +1,4 @@
-
-## Table of Contents|   
+## Table of Contents   
 [Starting/Stop](#StartStop)  
 [Monitor instrument](#monitor)  
 
