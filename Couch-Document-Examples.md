@@ -28,7 +28,7 @@ A bus is a connection to the dripline node. It may provide a means of communicat
 <a name="instrument"/>
 ## Instrument
 An instrument is a physical box/component. It communicates over a bus and may respond to requests on several channels.
-```
+```json
 {
    "_id": "55023fce96bdb7219bafbd8c95003100",
    "_rev": "5-0607f7c6dedd59e4989c6b4735c5d807",
@@ -42,7 +42,7 @@ An instrument is a physical box/component. It communicates over a bus and may re
 <a name="channel"/>
 ## Channel
 I'll just post an actual example here
-```
+```json
 {
    "_id": "dc364434d07d8fe589e6e9b492",
    "_rev": "6-773ca9c9ec95a23ca1287d443610a181",
@@ -61,7 +61,7 @@ I'll just post an actual example here
 <a name='logger'"/>
 ## Logger
 Logger are special configurations in that they control a dripline behavior, not the configuration of a piece of hardware. Interval is given in seconds and tells dripline how often to "get" the indicated channel. The result is stored in the logged_data database.
-```
+```json
 {
    "_id": "65298fdbaffa4711bf7fc9ba24a4586b",
    "_rev": "1-50ec0fcfd9e1f88867d1caa6a97af943",
