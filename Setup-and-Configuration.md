@@ -1,7 +1,7 @@
 ## Table of Contents   
 [Building from source](#build)  
-[Configuration](#config)
-[Tips & Tricks](#tips)
+[Configuration](#config)  
+[Tips & Tricks](#tips)  
 
 <a name="build"/>
 ## Getting the source and building
