@@ -35,4 +35,4 @@ We assume that you already have some basics ([erlang](www.erlang.org), [git](www
 
 <a name="tips"/>
 ## Other Tips
-1. This should be obvious, but run dripline in either a [tmux](www.tmux.sourceforge.net) or [screen](www.gnu.org/software/screen) session. This allows you to reconnect to the erlang shell for trouble shooting without keeping a blocked terminal in your way.
+1. This should be obvious, but run dripline in either a [tmux](http://www.tmux.sourceforge.net) or [screen](http://www.gnu.org/software/screen) session.
