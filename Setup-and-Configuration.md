@@ -21,7 +21,10 @@ We assume that you already have some basics ([erlang](www.erlang.org), [git](www
 
 <a name="config"/>
 ## Configuration and starting the node
-1. _There are some steps to configure the local dripline node so that it knows its name and where to look for couch_
+1. The local dripline node is configured in a couple of files.
+    1. In $TOP/rel/files/vm.args, change the second line to name the node (this should probably just be the hostname of the computer)
+    2. In $TOP/rel/files/sys.config, change line 15 (the couch_host entry) to have the correct ip address/hostname and port number for the desired couch server.
+
 2. Instruments and channels are configured via documents in the configuration database. [Examples](Couch Document Examples) of the various configuration document types are provided on another page.
 
 3. Now just start dripline console and watch the magic.
