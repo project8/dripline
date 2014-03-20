@@ -55,3 +55,4 @@
 * -spec allows specification of types for functions. We find this especially useful in conjunction with dialyzer for catching problems.
 * Add a directory to shell path ```$ erl -pa <path/to/directory> ```
 * Start an application: ``` 1> application:start(<name>).```
+* More verbose status and error tracebacks ```1> application:start(sasl).```
