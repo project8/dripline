@@ -1,4 +1,4 @@
-There are several standard useful views for the various dripline databases. I'll duplicate them here without much comment for now, grouped for the [configuration](#configuration-database), [command](command-database), and [logger](#logged-data-database) databases.
+There are several standard useful views for the various dripline databases. I'll duplicate them here without much comment for now, grouped for the [configuration](#configuration-database), [command](#command-database), and [logger](#logged-data-database) databases.
 
 ### Configuration database
 ```json
