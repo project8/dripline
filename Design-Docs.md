@@ -23,6 +23,19 @@ There are several standard useful views for the various dripline databases. I'll
 }
 ```
 
+```json
+{
+   "_id": "_design/channel_filter",
+   "_rev": "1-371480aadfe48ed8e0011b86bce8b8a2",
+   "language": "javascript",
+   "views": {
+       "muxer_channels": {
+           "map": "function(doc) {\n  if(doc.instrument == \"adc_mux\") {\n    emit(doc.name, doc)\n  }\n}"
+       }
+   }
+}
+```
+
 ### Command Database
 
 ```json
