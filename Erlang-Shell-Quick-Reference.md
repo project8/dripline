@@ -39,6 +39,9 @@
     >> dbg:stop().
     ```
 
+### Have a process debug itself
+In a function, add a line ```dbg:p(self(), m),``` and then, in a running shell type ```dbg:tracer()```. Now When that function gets called, you'll get a full trace for it.
+
 <a name="compile"/>
 ### Compile and load source file
 * Compile the file (Note, the file's .erl extension is not required).
