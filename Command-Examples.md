@@ -30,3 +30,33 @@ Would return:
    }
 }
 ```
+
+### Set Document
+Saving a new document
+```json
+{
+   "_id": "0006015f0f5e485ea34cb91cf8095f34",
+   "type": "command",
+   "command": {
+       "do": "set",
+       "channel": <channel_name>,
+       "value": <value>,
+   },
+}
+```
+Would produce
+```json
+{
+   "_id": "0006015f0f5e485ea34cb91cf8095f34",
+   "_rev": "2-39c19be9ada25396412ad7e7584ce165",
+   "command": {
+       "do": "set",
+       "value": <value>,
+       "channel": <channel_name>
+   },
+   "type": "command",
+   "result": "ok",
+   "timestamp": <time>,
+   "final": "ok"
+}
+```
