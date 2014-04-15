@@ -11,3 +11,10 @@ An incomplete list follows
 * celsius_to_kelvin
 * linear_r_to_z
 * kjlc354_cal
+
+There is also some configuration done by "sensor_type" field. Sensor types for the muxer can be:
+* rtd85
+* rtd85_fourwire
+* dmm_dc_mv
+* dmm_dc
+* cernox
