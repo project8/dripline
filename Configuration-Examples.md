@@ -40,7 +40,7 @@ In dripline an instrument refers to a physical device. Communication with it is 
 ### Channel
 In dripline, a channel is a reference to a function in an instrument module. The notable fields are:
 * instrument: name of the instrument the channel is associated with
-* locator: atom in being matched in the module to decide what function to call
+* locator: atom in being matched in the module to decide what function to call (in the case of the muxer, an atom of the form "{card,channel}" is used and parsed.
 * name: human readable name for the channel (used in get/set documents etc.)
 * post_hooks: a list of hooks used to process the data returned by the instrument prior to posting a reply
 ```json
