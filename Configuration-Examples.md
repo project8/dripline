@@ -38,5 +38,35 @@ In dripline an instrument refers to a physical device. Communication with it is 
 ```
 
 ### Channel
+In dripline, a channel is a reference to a function in an instrument module. The notable fields are:
+* instrument: name of the instrument the channel is associated with
+* locator: atom in being matched in the module to decide what function to call
+* name: human readable name for the channel (used in get/set documents etc.)
+* post_hooks: a list of hooks used to process the data returned by the instrument prior to posting a reply
+```json
+{
+   "_id": "a7469beaaabea5eb23ff364dfb53d98b",
+   "_rev": "4-6794e96b2c968a924fb65bc8ab499ad5",
+   "instrument": "hf_sweeper",
+   "type": "channel",
+   "locator": "cw_freq",
+   "name": "hf_cw_freq",
+   "post_hooks": [
+       "strip_newline_chars"
+   ]
+}
+```
 
 ### Logger
+In dripline, a logger is a process which performs a "get" on a particular channel, at a particular interval, and stores the result in the dripline_logged_data database. The relevant fields are:
+* channel: name of the channel to poll
+* interval: number of seconds between log entries
+```json
+{
+   "_id": "65298fdbaffa4711bf7fc9ba24a4586b",
+   "_rev": "1-50ec0fcfd9e1f88867d1caa6a97af943",
+   "type": "logger",
+   "channel": "al60_head_temp",
+   "interval": "8"
+}
+```
