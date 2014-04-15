@@ -56,7 +56,22 @@ In dripline, a channel is a reference to a function in an instrument module. The
    ]
 }
 ```
-
+Or for a muxer sensor
+```json
+{
+   "_id": "dc364434d07d8fe589e6e9b492",
+   "_rev": "6-773ca9c9ec95a23ca1287d443610a181",
+   "type": "channel",
+   "instrument": "adc_mux",
+   "locator": "{3,4}",
+   "name": "al60_head_temp",
+   "post_hooks": [
+       "force_positive",
+       "cernox43022"
+   ],
+   "sensor_type": "cernox"
+}
+```
 ### Logger
 In dripline, a logger is a process which performs a "get" on a particular channel, at a particular interval, and stores the result in the dripline_logged_data database. The relevant fields are:
 * channel: name of the channel to poll
