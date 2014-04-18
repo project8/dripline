@@ -13,7 +13,7 @@
 * [[Setup and Configuration]] provides further instruction for getting a local dripline node running.
 
 ## Usage
-The dripline executable takes a config file which overwrites default settings. Call it with ```$ /path/to/dripline console -extra_config <fully qualified path>```. For example, if you are in the top of the software tree, you could do something like:
+The dripline executable takes a config file which overwrites default settings. Call it with ```$ /path/to/dripline console -extra_config <fully qualified path>```. For example, if you are starting from scratch, you could do something like:
 
 ```shell
 $ git clone git@github.com:project8/dripline
