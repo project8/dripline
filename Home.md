@@ -11,3 +11,15 @@
 ## Getting Started
 * [Rebar](http://www.github.com/basho/rebar) is the required build system. It will download and build all other required dependencies.
 * [[Setup and Configuration]] provides further instruction for getting a local dripline node running.
+
+## Usage
+The dripline executable takes a config file which overwrites default settings. Call it with ```$ /path/to/dripline console -extra_config <fully qualified path>```. For example, if you are in the top of the software tree, you could do something like:
+
+```shell
+$ git clone git@github.com:project8/dripline
+$ cd dripline
+$ make release
+$ echo "{couch_host, \"myrna.phys.washington.edu\"}." > local.config
+$ echo "{couch_port, 5984}." >> local.config
+$ ./rel/dripline/bin/dripline console -extra_config $(pwd)/local.config
+```
