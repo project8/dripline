@@ -21,7 +21,7 @@ You should **_always_** run dripline in a tmux or equivalent detachable session 
 
 <a name="monitor"/>
 ### Monitor a particular instrument
-1. For help determining the name of the instrument of interest
+1. All instruments in dripline have their own name - for example, the muxer unit is named adc_mux.  The couchdb configuration document which describes a given instrument has its name stored as one of the fields.  For help determining the name of the instrument of interest
 
     ```shell
     >> supervisor:which_children(dl_instr_sup).
