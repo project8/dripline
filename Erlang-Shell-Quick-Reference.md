@@ -6,6 +6,7 @@ Jump to:
 
 <a name="StartStop"/>
 ### Starting and stopping
+You should **_always_** run dripline in a tmux or equivalent detachable session (see [here](../../hardware/wiki/Command-line-tool-quick-reference#tmux) for help).
 * Start the dripline console from the top of the dripline source tree (assumes a successful [build](Setup and Configuration)).
 
     ```shell
