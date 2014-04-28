@@ -1,5 +1,5 @@
-[[Command Examples]]  
-[[Configuration Examples]]  
+[[Command Doc Examples]]  
+[[Configuration Doc Examples]]  
 [[Database Views|Design Docs]]  
 [[Result Hooks]]  
 [[Erlang Shell|Erlang Shell Quick Reference]]  
