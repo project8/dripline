@@ -1,4 +1,4 @@
-## Table of Contents   
+Jump to:  
 [Starting & Stop](#StartStop)  
 [Monitor instrument](#monitor)  
 [Hot update source file](#compile)  
