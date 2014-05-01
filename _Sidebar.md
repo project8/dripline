@@ -1,4 +1,4 @@
-[[Command Doc Examples]]  
+[[Command Doc Examples|Command Examples]]  
 [[Configuration Doc Examples]]  
 [[Database Views|Design Docs]]  
 [[Result Hooks]]  
