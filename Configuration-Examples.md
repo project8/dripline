@@ -1,4 +1,4 @@
-Dripline's interactions with hardware is defined in a configuration database named dripline_conf. Documents are use to configure [buses](#bus), [instruments](#instrument), [channels](channel), and [loggers](#logger). Each is described, with examples, below.
+Dripline's interactions with hardware is defined in a configuration database named dripline_conf. Documents are use to configure [buses](#bus), [instruments](#instrument), [channels](#channel), and [loggers](#logger). Each is described, with examples, below.
 
 ### Bus
 In dripline, a bus is describes a means of communicating with one or more device. The important fields to note are:
