@@ -76,12 +76,14 @@ Or for a muxer sensor
 In dripline, a logger is a process which performs a "get" on a particular channel, at a particular interval, and stores the result in the dripline_logged_data database. The relevant fields are:
 * channel: name of the channel to poll
 * interval: number of seconds between log entries
+* name: identifier must be unique among loggers, used by the pypeline logger, ignored by dripline
 ```json
 {
    "_id": "65298fdbaffa4711bf7fc9ba24a4586b",
    "_rev": "1-50ec0fcfd9e1f88867d1caa6a97af943",
    "type": "logger",
    "channel": "al60_head_temp",
-   "interval": "8"
+   "interval": "8",
+   "name": "cold_head_temp_logger"
 }
 ```
