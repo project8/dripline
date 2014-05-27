@@ -43,6 +43,7 @@ In dripline, a channel is a reference to a function in an instrument module. The
 * locator: atom in being matched in the module to decide what function to call (in the case of the muxer, an atom of the form "{card,channel}" is used and parsed.
 * name: human readable name for the channel (used in get/set documents etc.)
 * post_hooks: a list of hooks used to process the data returned by the instrument prior to posting a reply
+* sensor_type: for muxer channels, give a sensor_type; an element of {rtd85, rtd85_fourwire, rtd91, dmm_dc, dmm_dc_mv, dmm_ac, cernox, fourwire}. Note that "dmm_dc" configures with a 10V range and 0.001V resolution,dmm_dc_mv configures with 100mV range and 3E-7 mV resolution, dmm_ac configures with 10V range and 0.001V resolution, "cernox" and "fourwire" both use auto range & resolution. The various "*rtd*" are built into the muxer. 
 ```json
 {
    "_id": "a7469beaaabea5eb23ff364dfb53d98b",
