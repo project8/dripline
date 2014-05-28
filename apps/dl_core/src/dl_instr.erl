@@ -19,7 +19,9 @@ start_bus(BsData) ->
            unix ->
                generate_unix_os_cspec(BsData);
            shell ->
-               generate_shell_os_cspec(BsData)
+               generate_shell_os_cspec(BsData);
+           gen_lxi_bus ->
+               generate_lxi_cspec(BsData)
            end,
     ok = start_bus_from_spec(BsChSpec).
 
@@ -115,6 +117,18 @@ generate_unix_os_cspec(_BsData) ->
 generate_shell_os_cspec(_BsData) ->
     {none,{none,none,none},none,none,none,[shell]}.
 
+-spec generate_lxi_cspec(dl_bus_data:dl_bus_data()) -> supervisor:child_spec() | {error, term()}.
+generate_lxi_cspec(BusInfo) ->
+    Info = dl_bus_data:get_info(BusInfo),
+    ID = dl_bus_data:get_id(BusInfo),
+    StartFunc = {gen_lxi_bus, start_link, [ID, proplists:get_value(ip_addr, Info),
+                                          proplists:get_value(port, Info), gen_lxi_bus]},
+    Restart = permanent,
+    Shutdown = 5000,
+    Type = worker,
+    Modules = [gen_lxi_bus],
+    {ID, StartFunc, Restart, Shutdown, Type, Modules}.
+
 -spec start_bus_from_spec(supervisor:child_spec()) -> ok | {error, term()}.
 start_bus_from_spec({_N,{_,_,_},_Tm,_Tmo,_Role,[M]}=Ch) 
   when M =:= eprologix_cmdr; M =:= prologix_gpib2ethernet ->
@@ -126,7 +140,20 @@ start_bus_from_spec({_N,{_,_,_},_Tm,_Tmo,_Role,[M]}=Ch)
     {error, {already_started, _}}->
         ok;
     {error, Reason} ->
-        lager:error("Couldn't start prologix bus: ~p",[Reason]),
+        lager:error("Couldn't start prologix bus: ~p", [Reason]),
+        ok
+    end;
+start_bus_from_spec({N,{_,_,_},_Tm,_Tmo,_Role,[M]}=Ch) when M =:= gen_lxi_bus ->
+    case supervisor:start_child(eprologix_sup, Ch) of
+    {ok, _} ->
+        ok;
+    {ok, _, _} ->
+        ok;
+    {error, {already_started, _}}->
+        lager:warning("bus (~p) is already started", [N]),
+        ok;
+    {error, Reason} ->
+        lager:error("Couldn't start lxi bus, reason is:~n~n~p", [Reason]),
         ok
     end;
 start_bus_from_spec({_N,{_,_,_},_Tm,_Tmo,_Role,[unix]}) ->
@@ -134,4 +161,10 @@ start_bus_from_spec({_N,{_,_,_},_Tm,_Tmo,_Role,[unix]}) ->
     ok;
 start_bus_from_spec({_N,{_,_,_},_Tm,_Tmo,_Role,[shell]}) ->
     lager:debug("starting shell"),
-    ok.
+    ok;
+start_bus_from_spec({_,_,_,_,_,[Type]}) ->
+    lager:error("unable to start bus of type: ~p~n   No matching case", [Type]),
+    {error, unrecognized_bus_module};
+start_bus_from_spec(_) ->
+    lager:error("Arg tuple has wrong number of terms"),
+    {error, bus_spec_is_ill_formed}.

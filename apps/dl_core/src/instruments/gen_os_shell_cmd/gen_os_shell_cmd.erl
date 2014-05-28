@@ -1,7 +1,7 @@
 %%%-------------------------------------------------------------------
 %%% @author Ben LaRoque
 %%%
-%%% Created: 9 May 2014 by Ben Laroque
+%%% Created: 9 May 2014 by Ben LaRoque
 % gen_os_shell_cmd.erl
 % Behavior for "instruments" which are really operating system
 % commands.  The behavior module wraps a gen_server, and the
@@ -19,13 +19,13 @@
 %% dl_gen_bus callbacks
 %%--------------------------------------------------------------------
 -export([start_link/2,
-         init/1,
          get/2,
          set/3]).
 %%--------------------------------------------------------------------
 %% gen_server callbacks
 %%--------------------------------------------------------------------
--export([handle_call/3,
+-export([init/1,
+         handle_call/3,
          handle_cast/2,
          handle_info/2,
          terminate/2,
