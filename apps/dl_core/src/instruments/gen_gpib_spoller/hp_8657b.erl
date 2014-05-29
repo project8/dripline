@@ -4,7 +4,6 @@
 %%%----------------------------------------------------------------------------
 -module(hp_8657b).
 -behavior(gen_gpib_spoller).
--behavior(dl_gen_instrument).
 
 -export([start_link/4,
          init/1,
