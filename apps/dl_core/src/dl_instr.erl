@@ -20,7 +20,7 @@ start_bus(BsData) ->
                generate_unix_os_cspec(BsData);
            shell ->
                generate_shell_os_cspec(BsData);
-           gen_lxi_bus ->
+           gen_lxi->
                generate_lxi_cspec(BsData)
            end,
     ok = start_bus_from_spec(BsChSpec).
@@ -121,12 +121,12 @@ generate_shell_os_cspec(_BsData) ->
 generate_lxi_cspec(BusInfo) ->
     Info = dl_bus_data:get_info(BusInfo),
     ID = dl_bus_data:get_id(BusInfo),
-    StartFunc = {gen_lxi_bus, start_link, [ID, proplists:get_value(ip_addr, Info),
-                                          proplists:get_value(port, Info), gen_lxi_bus]},
+    StartFunc = {gen_lxi, start_link, [ID, proplists:get_value(ip_addr, Info),
+                                          proplists:get_value(port, Info), gen_lxi]},
     Restart = permanent,
     Shutdown = 5000,
     Type = worker,
-    Modules = [gen_lxi_bus],
+    Modules = [gen_lxi],
     {ID, StartFunc, Restart, Shutdown, Type, Modules}.
 
 -spec start_bus_from_spec(supervisor:child_spec()) -> ok | {error, term()}.
@@ -143,7 +143,7 @@ start_bus_from_spec({_N,{_,_,_},_Tm,_Tmo,_Role,[M]}=Ch)
         lager:error("Couldn't start prologix bus: ~p", [Reason]),
         ok
     end;
-start_bus_from_spec({N,{_,_,_},_Tm,_Tmo,_Role,[M]}=Ch) when M =:= gen_lxi_bus ->
+start_bus_from_spec({N,{_,_,_},_Tm,_Tmo,_Role,[M]}=Ch) when M =:= gen_lxi->
     case supervisor:start_child(eprologix_sup, Ch) of
     {ok, _} ->
         ok;
