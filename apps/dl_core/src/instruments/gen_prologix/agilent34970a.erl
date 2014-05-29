@@ -64,7 +64,7 @@ handle_get(Ch, #state{ttl=T, last_upd=L, cache=C}=SD) ->
              %% the TTL for the unit.  We need to update the *existing*
              %% cache.
              {update_cache, SD#state{new_ch=false}};
-         {true, data, #cache_v{lastval=Ls, ts=Ts}} ->
+         {true, data, #cache_v{lastval=Ls, ts=_Ts}} ->
              %% The channel is valid and the cache is valid.  Just 
              %% return the data.
              {data, Ls, SD}
