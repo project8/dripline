@@ -25,6 +25,8 @@
 -export([get_code/1,set_code/2]).
 -export([get_ts/1,set_ts/2]).
 
+-export([construct_response/2]).
+
 %%%%%%%%%%%%%%%%%%%%%%%
 %%% API Definitions %%% 
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -122,3 +124,18 @@ get_ts(#dl_data{ts=T}) ->
 -spec set_ts(dl_data(), dl_data_ts_type()) -> dl_data().
 set_ts(DD, TS) when is_record(DD, dl_data) ->
     DD#dl_data{ts=TS}.
+
+construct_response(error, Details) ->
+    D0 = new(),
+    D1 = set_data(D0, Details),
+    D2 = set_code(D1, error),
+    set_ts(D2, dl_util:make_ts());
+construct_response(ok, Data) ->
+    D0 = new(),
+    NewData = case Data of
+        <<>> -> <<"ok">>;
+        _ -> Data
+    end,
+    D1 = set_data(D0, NewData),
+    D2 = set_code(D1, ok),
+    set_ts(D2, dl_util:make_ts()).
