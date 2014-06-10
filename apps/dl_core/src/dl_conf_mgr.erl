@@ -692,7 +692,7 @@ add_bus(BsData) ->
               end,
               Instr);
     false ->
-        lager:notice("non-local bus info recvd (~p)",[BusName]),
+        lager:info("non-local bus info recvd (~p)",[BusName]),
         ok
     end,
     dl_softbus:bcast(agents, ?MODULE, {nbs, BsData}).
