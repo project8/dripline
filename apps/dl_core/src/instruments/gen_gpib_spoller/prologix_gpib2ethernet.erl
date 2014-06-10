@@ -125,6 +125,7 @@ handle_call({send, Address, Data},
              erlang:integer_to_binary(Address),
              Data]),
     ToSend = pack_eprologix_iolist(Out,T),
+    lager:notice("about ToSend: ~p", [ToSend]),
     R = #req{type=send, from=From, data=ToSend},
     NewQueue = case W of
            [] ->

@@ -291,8 +291,11 @@ handle_sync_event({send, Dt}, Fr,
                 instr_addr=Addr}=SD) ->
     {ToSend, Req} = case is_query(Dt) of
             true ->
+                lager:notice("is querry true, no opc"),
                 {Dt, {qry, Fr}};
             false ->
+                lager:notice("is querry false, add opc"),
+                lager:notice("data is: ~p", [Dt]),
                 %% actually need to strip whitespace and so on here
                 %% to make sure this is a correctly formed query.
                 {[Dt,<<";*OPC">>], {stmt, Fr}}
