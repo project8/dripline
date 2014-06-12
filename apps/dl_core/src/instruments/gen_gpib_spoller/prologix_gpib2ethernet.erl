@@ -54,7 +54,7 @@ read_eoi(PrologixName, Address) ->
 
 -spec send(atom(), integer(), iolist()) -> ok.
 send(PrologixName, Address, Data) ->
-    gen_server:call(PrologixName, {send, Address, Data}).
+    gen_server:call(PrologixName, {send, Address, Data}, 30000).
 
 -spec send_sync(atom(), integer(), iolist()) -> ok.
 send_sync(PrologixName, Address, Data) ->
@@ -125,7 +125,6 @@ handle_call({send, Address, Data},
              erlang:integer_to_binary(Address),
              Data]),
     ToSend = pack_eprologix_iolist(Out,T),
-    lager:notice("about ToSend: ~p", [ToSend]),
     R = #req{type=send, from=From, data=ToSend},
     NewQueue = case W of
            [] ->

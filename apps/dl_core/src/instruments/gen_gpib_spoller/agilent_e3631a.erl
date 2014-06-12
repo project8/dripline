@@ -36,14 +36,12 @@ start_link(InstrName, GPIBAddress, BusMod, BusName) ->
     gen_gpib_spoller:start_link(?MODULE, InstrName, GPIBAddress, BusMod, BusName).
 
 handle_get(output, StateData) ->
-    lager:notice("getting output"),
     {send, <<"OUTP:STAT?">>, StateData};
 handle_get(_Any, StateData) ->
     lager:warning("unimplemented get"),
     {error, unimplemented, StateData}.
 
 handle_set(output, Value, StateData) ->
-    lager:notice("setting output state"),
     {send, [<<"OUTP:STAT ">>, Value], StateData};
 handle_set(enable, Value, StateData) ->
     {error, how_do_i_do_that, StateData};
