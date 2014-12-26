@@ -1,3 +1,10 @@
+# WARNING
+**Everything on this wiki is currently out of date and refers to the old, now deprecated system**
+Please proceed to the [online documentation](http://www.project8.org/dripline/index.html)
+
+
+
+
 # Dripline
 
 ... is an erlang based hardware interface layer and slow control system developed for Project 8.
