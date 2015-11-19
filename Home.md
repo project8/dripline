@@ -1,32 +1,13 @@
-# WARNING
-**Everything on this wiki is currently out of date and refers to the old, now deprecated system**
-Please proceed to the [online documentation](http://www.project8.org/dripline/index.html)
-
-
-
-
 # Dripline
 
-... is an erlang based hardware interface layer and slow control system developed for Project 8.
+Is a mostly [RESTful](https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) framework for control systems developed by [Project 8](http://www.project8.org).
+It comprises two components:  
+1. A [Wire Protocol](#Wire-Protocol) which defines the structure of valid messages
+2. A [Set of Behaviors](#Behaviors) which are standardized behaviors based on messages sent using that wire protocol
 
 ## Resources
 * wiki: this document
-* the included README file and comments in the code are also useful
-* the [erlang debugger](http://erldocs.com/R13B02/runtime_tools/dbg.html)
-* Some useful erlang shell references are collected in the [[Erlang Shell Quick Reference]]
+* the included README files
+* the githubpages web documentation
 
 ## Getting Started
-* [Rebar](http://www.github.com/basho/rebar) is the required build system. It will download and build all other required dependencies.
-* [[Setup and Configuration]] provides further instruction for getting a local dripline node running.
-
-## Usage
-The dripline executable takes a config file which overwrites default settings. Call it with ```$ /path/to/dripline console -extra_config <fully qualified path>```. For example, if you are starting from scratch, you could do something like:
-
-```shell
-$ git clone git@github.com:project8/dripline
-$ cd dripline
-$ make release
-$ echo "{couch_host, \"myrna.phys.washington.edu\"}." > local.config
-$ echo "{couch_port, 5984}." >> local.config
-$ ./rel/dripline/bin/dripline console -extra_config $(pwd)/local.config
-```

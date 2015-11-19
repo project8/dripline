@@ -1,6 +1,0 @@
-[[Command Doc Examples|Command Examples]]  
-[[Configuration Doc Examples|Configuration Examples]]  
-[[Database Views|Design Docs]]  
-[[Result Hooks]]  
-[[Interacting with a Node|Erlang Shell Quick Reference]]  
-[[Useful Views|Design Docs]]  
