@@ -1,3 +1,8 @@
+The following sections summarize various convention which all dripline-compliant implementations should strive to follow.
+
+[Broadcast routing keys][#alert-routing-keys]  
+[Resource Lockout][#lockout]
+
 Alert Routing Keys
 ------------------
 The alerts exchange is used to "broadcast" messages. These messages are not directed to any particular consumer, and may well be of equal interest to no consumers or many consumers. Messages sent out on this exchange do not receive a reply. As with everything, we define some standards so that we can catch and parse messages in a meaningful way. Currently reserved routing keys are:
