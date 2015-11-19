@@ -4,7 +4,7 @@ Is a mostly [RESTful](https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_
 It comprises two components:  
 
 1. A [[Wire Protocol|Wire-Protocol]] which defines the structure of valid messages
-2. A [[Set of Behaviors|Behaviors]] which are standardized behaviors based on messages sent using that wire protocol
+2. A [[Set of Conventions|Conventions]] which are standardized behaviors based on messages sent using that wire protocol
 
 ## Resources
 * wiki: this document
