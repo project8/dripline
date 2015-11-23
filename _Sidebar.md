@@ -1,6 +1,9 @@
 ## [[Dripline|Home]]
 
-[[Conventions]]  
-[[Design]]  
-[[Version]]  
+### Reference
 [[Wire Protocol]]  
+[[Conventions]]  
+
+### About
+[[Design Principles|Design]]  
+[[Version]]  
