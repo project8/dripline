@@ -1,6 +1,6 @@
 ## [[Dripline|Home]]
 
-[[Wire Protocol]]  
 [[Conventions]]  
 [[Design]]  
 [[Version]]  
+[[Wire Protocol]]  
