@@ -1,13 +1,10 @@
-Message Standards
-=================
-
 Encoding
---------
+========
 
 The AMQP message body should be formatted in either [JSON](http://json.org) or [msgpack](http://msgpack.org).  The encoding (`application/json` or `application/msgpack`) should be specified in the `content_encoding` field of the AMQP message.
 
 Structure
----------
+=========
 
 | Field | Type | Required | Values |
 |:------|:-----|:---------|:-------|
@@ -28,7 +25,7 @@ Structure
 
 
 Return Codes
-------------
+============
 
 The following table is direct from the current error codes as defined in dripline. I think I'd like to make some changes, but I haven't thought them through very much. Just brainstorming, I'm thinking 0-99 for success and warnings; 100-199 for errors related to AMQP (ex, errors caught from library); 200-299 for hardware related errors (interaction problems, driver exceptions, etc.); 300-399 shouldn't be 'dripline' but 'consumer', the several encoding/decoding related exceptions could probably be combined. I should discuss this with Noah w.r.t. hornet and mantis.
 
