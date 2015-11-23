@@ -1,9 +1,3 @@
-=======
-Purpose
-=======
-Our software packages generally communicate with one another, and interact with hardware components with messages sent using the AMQP protocol. This wire protocol was developed to standardize the format of those messages.
-
-
 Message Standards
 =================
 
