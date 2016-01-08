@@ -6,7 +6,7 @@ History
 
 | Version | Date | Release Notes |
 |:--------|:-----|:--------------|
-| *Planned: 1.5.x* | | OP_CONFIG deprecated; Use of MSGPACK deprecated |
+| *Planned: 1.5.x* | | OP_CONFIG deprecated; Use of MSGPACK deprecated; OP_CMD instruction in payload `values` deprecated |
 | 1.4.0   | Sept 16, 2015 | Added lockout_key field and return codes 1 307, and 308 |
 | 1.3.0   | Sept 1, 2015 | Added return_msg field to replies |
 | 1.2.0   | June 1, 2015 | Added hostname and username to sender_info |
