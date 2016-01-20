@@ -51,7 +51,8 @@ The following table is direct from the current error codes as defined in driplin
 | 306   | Method not supported |  
 | 307   | Access denied |
 | 308   | Invalid key |
-|308-399| Unallocated Dripline errors|  
+| 309   | Deprecated Feature |
+|310-399| Unallocated Dripline errors|  
 | 400   | Generic Database Error |  
 |401-998| Unallocated |  
 |999    | Unhandled core-language or dependency exceptions | 
