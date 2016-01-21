@@ -1,6 +1,6 @@
 The following sections summarize various convention which all dripline-compliant implementations should strive to follow.
 
-[Broadcast routing keys](#alert-routing-keys)  
+[Alert Exchange Routing keys](#alert-routing-keys)  
 [Resource Lockout](#lockout)  
 
 Alert Routing Keys
