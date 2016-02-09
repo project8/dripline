@@ -2,7 +2,7 @@
 
 ## Summary
 
-Dripline is a mostly [RESTful](https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) framework for control systems developed by [Project 8](http://www.project8.org).
+Dripline is a mostly [REST](https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)-inspired framework for control systems developed by [Project 8](http://www.project8.org).
 It comprises two components:  
 
 1. A [[Wire Protocol|Wire-Protocol]] which defines the structure of valid messages
