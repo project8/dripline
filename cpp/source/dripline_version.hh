@@ -26,9 +26,8 @@
 
 namespace dripline
 {
-    using std::string;
     
-    class DRIPLINE_API version : public scarab::version_semver
+    class DRIPLINE_API version : public scarab::version_semantic
     {
         public:
             version();
@@ -39,13 +38,13 @@ namespace dripline
     class DRIPLINE_API version_wrapper : public scarab::singleton< version_wrapper >, public scarab::version_ifc
     {
         protected:
-            friend class singleton< version_wrapper >;
+            friend class scarab::singleton< version_wrapper >;
             friend class scarab::destroyer< version_wrapper >;
             version_wrapper();
             ~version_wrapper();
 
         public:
-            void set_imp( scarab::version_semver* a_imp )
+            void set_imp( scarab::version_semantic* a_imp )
             {
                 delete f_imp;
                 f_imp = a_imp;
@@ -66,41 +65,41 @@ namespace dripline
                 return f_imp->patch_version();
             }
 
-            virtual const string& version_str() const
+            virtual const std::string& version_str() const
             {
                 return f_imp->version_str();
             }
 
-            virtual const string& package() const
+            virtual const std::string& package() const
             {
                 return f_imp->package();
             }
-            virtual const string& commit() const
+            virtual const std::string& commit() const
             {
                 return f_imp->commit();
             }
 
-            virtual const string& exe_name() const
+            virtual const std::string& exe_name() const
             {
                 return f_imp->exe_name();
             }
-            virtual const string& hostname() const
+            virtual const std::string& hostname() const
             {
                 return f_imp->hostname();
             }
-            virtual const string& username() const
+            virtual const std::string& username() const
             {
                 return f_imp->username();
             }
 
         private:
-            scarab::version_semver* f_imp;
+            scarab::version_semantic* f_imp;
     };
 
 
     struct DRIPLINE_API version_setter
     {
-            version_setter( scarab::version_semver* a_ver )
+            version_setter( scarab::version_semantic* a_ver )
             {
                 version_wrapper::get_instance()->set_imp( a_ver );
             }
