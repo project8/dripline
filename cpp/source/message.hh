@@ -13,24 +13,16 @@
 #include "parsable.hh"
 
 #include "amqp.hh"
+#include "dripline_api.hh"
 #include "dripline_constants.hh"
+#include "routing_key_specifier.hh"
 #include "uuid.hh"
 
 #include <memory>
-
 #include <string>
-#include "dripline_api.hh"
 
 namespace dripline
 {
-    using std::shared_ptr;
-    using std::make_shared;
-    using std::string;
-
-    using scarab::param_node;
-    using scarab::param_value;
-    using scarab::parsable;
-
     class dripline_error;
 
     class message;
@@ -39,11 +31,11 @@ namespace dripline
     class msg_info;
     class msg_alert;
 
-    typedef shared_ptr< message > message_ptr_t;
-    typedef shared_ptr< msg_request > request_ptr_t;
-    typedef shared_ptr< msg_reply > reply_ptr_t;
-    typedef shared_ptr< msg_info > info_ptr_t;
-    typedef shared_ptr< msg_alert > alert_ptr_t;
+    typedef std::shared_ptr< message > message_ptr_t;
+    typedef std::shared_ptr< msg_request > request_ptr_t;
+    typedef std::shared_ptr< msg_reply > reply_ptr_t;
+    typedef std::shared_ptr< msg_info > info_ptr_t;
+    typedef std::shared_ptr< msg_alert > alert_ptr_t;
 
     //***********
     // Message
@@ -68,43 +60,49 @@ namespace dripline
 
         public:
             /// from AMQP to message object
-            static message_ptr_t process_envelope( amqp_envelope_ptr a_envelope, const std::string& a_queue_name );
+            static message_ptr_t process_envelope( amqp_envelope_ptr a_envelope );
 
             /// from message object to AMQP
             amqp_message_ptr create_amqp_message() const;
 
         protected:
             virtual bool derived_modify_amqp_message( amqp_message_ptr t_amqp_msg ) const = 0;
-            virtual bool derived_modify_message_body( param_node& a_node ) const = 0;
+            virtual bool derived_modify_message_body( scarab::param_node& a_node ) const = 0;
 
             bool encode_message_body( std::string& a_body ) const;
             std::string interpret_encoding() const;
 
         public:
-            mv_referrable( string, routing_key );
-            mv_referrable( string, routing_key_specifier );
-            mv_assignable( parsable, parsed_rks );
-            mv_referrable( string, correlation_id );
-            mv_referrable( string, reply_to );
+            mv_referrable( std::string, routing_key );
+            mv_referrable( std::string, rks );
+            //mv_referrable( routing_key_specifier, parsed_rks );
+            mv_referrable( std::string, correlation_id );
+            mv_referrable( std::string, reply_to );
             mv_accessible( encoding, encoding );
-            mv_referrable( string, timestamp );
+            mv_referrable( std::string, timestamp );
 
-            mv_referrable_const( string, sender_package );
-            mv_referrable_const( string, sender_exe );
-            mv_referrable_const( string, sender_version );
-            mv_referrable_const( string, sender_commit );
-            mv_referrable_const( string, sender_hostname );
-            mv_referrable_const( string, sender_username );
-            mv_referrable_const( string, sender_service_name );
+            mv_referrable_const( std::string, sender_package );
+            mv_referrable_const( std::string, sender_exe );
+            mv_referrable_const( std::string, sender_version );
+            mv_referrable_const( std::string, sender_commit );
+            mv_referrable_const( std::string, sender_hostname );
+            mv_referrable_const( std::string, sender_username );
+            mv_referrable_const( std::string, sender_service_name );
+
+        private:
+            mutable routing_key_specifier f_parsed_rks;
 
         public:
-            bool set_routing_key_specifier( const std::string& a_rks, parsable* a_parsed_rks );
+            routing_key_specifier& parsed_rks();
+            const routing_key_specifier& parsed_rks() const;
+
+            bool set_routing_key_specifier( const std::string& a_rks, const routing_key_specifier& a_parsed_rks );
 
             virtual msg_t message_type() const = 0;
 
-            void set_sender_info( param_node* a_payload );
-            const param_node& get_sender_info() const;
-            param_node& get_sender_info();
+            void set_sender_info( scarab::param_node* a_payload );
+            const scarab::param_node& get_sender_info() const;
+            scarab::param_node& get_sender_info();
 
             void set_sender_package( const std::string& a_pkg );
 
@@ -120,16 +118,16 @@ namespace dripline
 
             void set_sender_service_name( const std::string& a_service );
 
-            void set_payload( param_node* a_payload );
-            const param_node& get_payload() const;
-            param_node& get_payload();
+            void set_payload( scarab::param_node* a_payload );
+            const scarab::param_node& get_payload() const;
+            scarab::param_node& get_payload();
 
         protected:
-            param_node* f_sender_info;
-            param_node* f_payload;
+            scarab::param_node* f_sender_info;
+            scarab::param_node* f_payload;
     };
 
-    std::ostream& operator<<( std::ostream& a_os, message::encoding a_enc );
+    DRIPLINE_API std::ostream& operator<<( std::ostream& a_os, message::encoding a_enc );
 
 
     //***********
@@ -142,7 +140,7 @@ namespace dripline
             msg_request();
             virtual ~msg_request();
 
-            static request_ptr_t create( param_node* a_payload, op_t a_msg_op, const std::string& a_routing_key, const std::string& a_reply_to, message::encoding a_encoding );
+            static request_ptr_t create( scarab::param_node* a_payload, op_t a_msg_op, const std::string& a_routing_key, const std::string& a_reply_to, message::encoding a_encoding );
 
             bool is_request() const;
             bool is_reply() const;
@@ -153,16 +151,18 @@ namespace dripline
 
         private:
             bool derived_modify_amqp_message( amqp_message_ptr t_amqp_msg ) const;
-            bool derived_modify_message_body( param_node& a_node ) const;
+            bool derived_modify_message_body( scarab::param_node& a_node ) const;
 
         public:
             virtual msg_t message_type() const;
-
-            mv_accessible_static_noset( msg_t, message_type );
+            static msg_t get_message_type();
 
             mv_referrable( uuid_t, lockout_key );
             mv_accessible( bool, lockout_key_valid );
             mv_accessible( op_t, message_op );
+
+        private:
+            static msg_t s_message_type;
 
     };
 
@@ -177,7 +177,7 @@ namespace dripline
             msg_reply();
             virtual ~msg_reply();
 
-            static reply_ptr_t create( retcode_t a_retcode, const std::string& a_ret_msg, param_node* a_payload, const std::string& a_routing_key, message::encoding a_encoding );
+            static reply_ptr_t create( retcode_t a_retcode, const std::string& a_ret_msg, scarab::param_node* a_payload, const std::string& a_routing_key, message::encoding a_encoding );
             static reply_ptr_t create( const dripline_error& a_error, const std::string& a_routing_key, message::encoding a_encoding );
 
             bool is_request() const;
@@ -187,18 +187,20 @@ namespace dripline
 
         private:
             bool derived_modify_amqp_message( amqp_message_ptr t_amqp_msg ) const;
-            bool derived_modify_message_body( param_node& a_node ) const;
+            bool derived_modify_message_body( scarab::param_node& a_node ) const;
 
         public:
             virtual msg_t message_type() const;
-
-            mv_accessible_static_noset( msg_t, message_type );
+            static msg_t get_message_type();
 
             mv_accessible( retcode_t, return_code );
-            mv_referrable( string, return_msg );
+            mv_referrable( std::string, return_msg );
 
         private:
             mutable std::string f_return_buffer;
+
+            static msg_t s_message_type;
+
     };
 
     //*********
@@ -211,7 +213,7 @@ namespace dripline
             msg_alert();
             virtual ~msg_alert();
 
-            static alert_ptr_t create( param_node* a_payload, const std::string& a_routing_key, message::encoding a_encoding );
+            static alert_ptr_t create( scarab::param_node* a_payload, const std::string& a_routing_key, message::encoding a_encoding );
 
             bool is_request() const;
             bool is_reply() const;
@@ -220,12 +222,15 @@ namespace dripline
 
         private:
             bool derived_modify_amqp_message( amqp_message_ptr t_amqp_msg ) const;
-            bool derived_modify_message_body( param_node& a_node ) const;
+            bool derived_modify_message_body( scarab::param_node& a_node ) const;
 
         public:
             virtual msg_t message_type() const;
+            static msg_t get_message_type();
 
-            mv_accessible_static_noset( msg_t, message_type );
+        private:
+            static msg_t s_message_type;
+
     };
 
     //********
@@ -245,12 +250,15 @@ namespace dripline
 
         private:
             bool derived_modify_amqp_message( amqp_message_ptr t_amqp_msg ) const;
-            bool derived_modify_message_body( param_node& a_node ) const;
+            bool derived_modify_message_body( scarab::param_node& a_node ) const;
 
         public:
             virtual msg_t message_type() const;
+            static msg_t get_message_type();
 
-            mv_accessible_static_noset( msg_t, message_type );
+        private:
+            static msg_t s_message_type;
+
     };
 
 
@@ -258,32 +266,32 @@ namespace dripline
     // Message
     //***********
 
-    inline void message::set_sender_info( param_node* a_sender_info )
+    inline void message::set_sender_info( scarab::param_node* a_sender_info )
     {
         delete f_sender_info;
         f_sender_info = a_sender_info;
-        if( ! f_sender_info->has( "package" ) ) f_sender_info->add( "package", new param_value( "N/A" ) );
+        if( ! f_sender_info->has( "package" ) ) f_sender_info->add( "package", new scarab::param_value( "N/A" ) );
         f_sender_package = f_sender_info->get_value( "package" );
-        if( ! f_sender_info->has( "exe" ) ) f_sender_info->add( "exe", new param_value( "N/A" ) );
+        if( ! f_sender_info->has( "exe" ) ) f_sender_info->add( "exe", new scarab::param_value( "N/A" ) );
         f_sender_exe = f_sender_info->get_value( "exe" );
-        if( ! f_sender_info->has( "version" ) ) f_sender_info->add( "version", new param_value( "N/A" ) );
+        if( ! f_sender_info->has( "version" ) ) f_sender_info->add( "version", new scarab::param_value( "N/A" ) );
         f_sender_version = f_sender_info->get_value( "version" );
-        if( ! f_sender_info->has( "commit" ) ) f_sender_info->add( "commit", new param_value( "N/A" ) );
+        if( ! f_sender_info->has( "commit" ) ) f_sender_info->add( "commit", new scarab::param_value( "N/A" ) );
         f_sender_commit = f_sender_info->get_value( "commit" );
-        if( ! f_sender_info->has( "hostname" ) ) f_sender_info->add( "hostname", new param_value( "N/A" ) );
+        if( ! f_sender_info->has( "hostname" ) ) f_sender_info->add( "hostname", new scarab::param_value( "N/A" ) );
         f_sender_hostname = f_sender_info->get_value( "hostname" );
-        if( ! f_sender_info->has( "username" ) ) f_sender_info->add( "username", new param_value( "N/A" ) );
+        if( ! f_sender_info->has( "username" ) ) f_sender_info->add( "username", new scarab::param_value( "N/A" ) );
         f_sender_username = f_sender_info->get_value( "username" );
-        if( ! f_sender_info->has( "service_name" ) ) f_sender_info->add( "service_name", new param_value( "N/A" ) );
+        if( ! f_sender_info->has( "service_name" ) ) f_sender_info->add( "service_name", new scarab::param_value( "N/A" ) );
         f_sender_service_name = f_sender_info->get_value( "service_name" );
     }
 
-    inline const param_node& message::get_sender_info() const
+    inline const scarab::param_node& message::get_sender_info() const
     {
         return *f_sender_info;
     }
 
-    inline param_node& message::get_sender_info()
+    inline scarab::param_node& message::get_sender_info()
     {
         return *f_sender_info;
     }
@@ -337,22 +345,33 @@ namespace dripline
         return;
     }
 
-    inline void message::set_payload( param_node* a_payload )
+    inline void message::set_payload( scarab::param_node* a_payload )
     {
         delete f_payload;
         f_payload = a_payload;
         return;
     }
 
-    inline const param_node& message::get_payload() const
+    inline const scarab::param_node& message::get_payload() const
     {
         return *f_payload;
     }
 
-    inline param_node& message::get_payload()
+    inline scarab::param_node& message::get_payload()
     {
         return *f_payload;
     }
+
+    inline routing_key_specifier& message::parsed_rks()
+    {
+        return f_parsed_rks;
+    }
+
+    const inline routing_key_specifier& message::parsed_rks() const
+    {
+        return f_parsed_rks;
+    }
+
 
     //***********
     // Request
@@ -375,21 +394,21 @@ namespace dripline
         return false;
     }
 
-    inline bool msg_request::derived_modify_amqp_message( amqp_message_ptr a_amqp_msg ) const
+    inline bool msg_request::derived_modify_amqp_message( amqp_message_ptr /*a_amqp_msg*/ ) const
     {
         return true;
     }
 
-    inline bool msg_request::derived_modify_message_body( param_node& a_node ) const
+    inline bool msg_request::derived_modify_message_body( scarab::param_node& a_node ) const
     {
-        a_node.add( "msgop", new param_value( to_uint(f_message_op) ) );
-        a_node.add( "lockout_key", new param_value( string_from_uuid( lockout_key() ) ) );
+        a_node.add( "msgop", new scarab::param_value( to_uint(f_message_op) ) );
+        a_node.add( "lockout_key", new scarab::param_value( string_from_uuid( lockout_key() ) ) );
         return true;
     }
 
     inline reply_ptr_t msg_request::reply( retcode_t a_ret_code, const std::string& a_ret_msg ) const
     {
-        reply_ptr_t t_reply = make_shared< msg_reply >();
+        reply_ptr_t t_reply = std::make_shared< msg_reply >();
         t_reply->set_return_code( a_ret_code );
         t_reply->return_msg() = a_ret_msg;
         t_reply->correlation_id() = f_correlation_id;
@@ -424,10 +443,10 @@ namespace dripline
         return true;
     }
 
-    inline bool msg_reply::derived_modify_message_body( param_node& a_node ) const
+    inline bool msg_reply::derived_modify_message_body( scarab::param_node& a_node ) const
     {
-        a_node.add( "retcode", new param_value( to_uint(f_return_code) ) );
-        a_node.add( "return_msg", new param_value( f_return_msg ) );
+        a_node.add( "retcode", new scarab::param_value( to_uint(f_return_code) ) );
+        a_node.add( "return_msg", new scarab::param_value( f_return_msg ) );
         return true;
     }
 
@@ -457,7 +476,7 @@ namespace dripline
         return true;
     }
 
-    inline bool msg_alert::derived_modify_message_body( param_node& /*a_node*/ ) const
+    inline bool msg_alert::derived_modify_message_body( scarab::param_node& /*a_node*/ ) const
     {
         return true;
     }
@@ -490,7 +509,7 @@ namespace dripline
         return true;
     }
 
-    inline bool msg_info::derived_modify_message_body( param_node& /*a_node*/ ) const
+    inline bool msg_info::derived_modify_message_body( scarab::param_node& /*a_node*/ ) const
     {
         return true;
     }

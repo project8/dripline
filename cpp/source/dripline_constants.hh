@@ -8,12 +8,21 @@
 #ifndef DRIPLINE_CONSTANTS_HH_
 #define DRIPLINE_CONSTANTS_HH_
 
+#include "dripline_api.hh"
+
 #include <cstdint>
 #include <limits>
 #include <ostream>
 
 namespace dripline
 {
+
+    // Return value constants
+#define RETURN_SUCCESS 1
+#define RETURN_ERROR -1
+#define RETURN_CANCELED -2
+#define RETURN_REVOKED -3
+
 
     // Dripline message constants
     // Conforming to the dripline wire protocol: https://github.com/project8/hardware/wiki/Wire-Protocol
@@ -27,13 +36,13 @@ namespace dripline
             send = 7,
             run = 8,
             cmd = 9,
-            unknown = std::numeric_limits< uint32_t >::max()
+            unknown = UINT32_MAX
     };
 
     // Conversion functions for use when a numeric value is needed
-    uint32_t to_uint( op_t an_op );
-    op_t to_op_t( uint32_t an_op_uint );
-    std::ostream& operator<<( std::ostream& a_os, op_t an_op );
+    DRIPLINE_API uint32_t to_uint( op_t an_op );
+    DRIPLINE_API op_t to_op_t( uint32_t an_op_uint );
+    DRIPLINE_API std::ostream& operator<<( std::ostream& a_os, op_t an_op );
 
     // Message type constants
     enum class msg_t:uint32_t
@@ -45,9 +54,9 @@ namespace dripline
     };
 
     // Conversion functions for use when a numeric value is needed
-    uint32_t to_uint( msg_t a_msg );
-    msg_t to_msg_t( uint32_t a_msg_uint );
-    std::ostream& operator<<( std::ostream& a_os, msg_t a_msg );
+    DRIPLINE_API uint32_t to_uint( msg_t a_msg );
+    DRIPLINE_API msg_t to_msg_t( uint32_t a_msg_uint );
+    DRIPLINE_API std::ostream& operator<<( std::ostream& a_os, msg_t a_msg );
 
     // Return codes
     enum class retcode_t:uint32_t
@@ -77,9 +86,9 @@ namespace dripline
     };
 
     // Conversion functions for use when a numeric value is needed
-    uint32_t to_uint( retcode_t a_ret );
-    retcode_t to_retcode_t( uint32_t a_ret_uint );
-    std::ostream& operator<<( std::ostream& a_os, retcode_t a_ret );
+    DRIPLINE_API uint32_t to_uint( retcode_t a_ret );
+    DRIPLINE_API retcode_t to_retcode_t( uint32_t a_ret_uint );
+    DRIPLINE_API std::ostream& operator<<( std::ostream& a_os, retcode_t a_ret );
 
 } /* namespace dripline */
 

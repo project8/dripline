@@ -19,12 +19,20 @@
 
 #include <map>
 
+using std::shared_ptr;
+using std::make_shared;
+using std::string;
+
+using scarab::param_node;
+using scarab::param_value;
+using scarab::parsable;
+using scarab::param_input_json;
+using scarab::param_output_json;
+
+using std::string;
+
 namespace dripline
 {
-    using scarab::param_input_json;
-    using scarab::param_output_json;
-
-    using std::string;
 
     LOGGER( dlog, "message" );
 
@@ -34,8 +42,7 @@ namespace dripline
 
     message::message() :
             f_routing_key(),
-            f_routing_key_specifier(),
-            f_parsed_rks( new parsable() ),
+            f_rks(),
             f_correlation_id(),
             f_reply_to(),
             f_encoding( encoding::json ),
@@ -46,6 +53,7 @@ namespace dripline
             f_sender_commit( "N/A" ),
             f_sender_hostname( "N/A" ),
             f_sender_username( "N/A" ),
+            f_parsed_rks(),
             f_sender_info( new param_node() ),
             f_payload( new param_node() )
     {
@@ -74,7 +82,7 @@ namespace dripline
         delete f_payload;
     }
 
-    message_ptr_t message::process_envelope( amqp_envelope_ptr a_envelope, const std::string& a_queue_name )
+    message_ptr_t message::process_envelope( amqp_envelope_ptr a_envelope )
     {
         if( ! a_envelope )
         {
@@ -99,7 +107,7 @@ namespace dripline
 
         string t_routing_key = a_envelope->RoutingKey();
 
-        DEBUG( dlog, "Processing message:\n" <<
+        LDEBUG( dlog, "Processing message:\n" <<
                  "Routing key: " << t_routing_key <<
                  *t_msg_node );
 
@@ -171,7 +179,7 @@ namespace dripline
             }
             else
             {
-                WARN( dlog, "Non-node payload is present; it will be ignored" );
+                LWARN( dlog, "Non-node payload is present; it will be ignored" );
                 t_message->set_payload( new param_node() );
             }
         }
@@ -188,7 +196,7 @@ namespace dripline
         string t_body;
         if( ! encode_message_body( t_body ) )
         {
-            ERROR( dlog, "Unable to encode message body" );
+            LERROR( dlog, "Unable to encode message body" );
             return amqp_message_ptr();
         }
 
@@ -211,7 +219,7 @@ namespace dripline
 
         if( ! this->derived_modify_message_body( t_body_node ) )
         {
-            ERROR( dlog, "Something went wrong in the derived-class modify_body_message function" );
+            LERROR( dlog, "Something went wrong in the derived-class modify_body_message function" );
             return false;
         }
 
@@ -220,13 +228,13 @@ namespace dripline
             case encoding::json:
                 if( ! param_output_json::write_string( t_body_node, a_body, param_output_json::k_compact ) )
                 {
-                    ERROR( dlog, "Could not convert message body to string" );
+                    LERROR( dlog, "Could not convert message body to string" );
                     return false;
                 }
                 return true;
                 break;
             default:
-                ERROR( dlog, "Cannot encode using <" << interpret_encoding() << "> (" << f_encoding << ")" );
+                LERROR( dlog, "Cannot encode using <" << interpret_encoding() << "> (" << f_encoding << ")" );
                 return false;
                 break;
         }
@@ -246,10 +254,10 @@ namespace dripline
         }
     }
 
-    bool message::set_routing_key_specifier( const std::string& a_rks, parsable* a_parsed_rks )
+    bool message::set_routing_key_specifier( const std::string& a_rks, const routing_key_specifier& a_parsed_rks )
     {
-        routing_key_specifier() = a_rks;
-        set_parsed_rks( a_parsed_rks );
+        f_rks = a_rks;
+        f_parsed_rks = a_parsed_rks;
         return true;
     }
 
@@ -285,6 +293,11 @@ namespace dripline
     }
 
     msg_t msg_request::s_message_type = msg_t::request;
+
+    msg_t msg_request::get_message_type()
+    {
+        return msg_request::s_message_type;
+    }
 
     msg_t msg_request::message_type() const
     {
@@ -333,6 +346,11 @@ namespace dripline
 
     msg_t msg_reply::s_message_type = msg_t::reply;
 
+    msg_t msg_reply::get_message_type()
+    {
+        return msg_reply::s_message_type;
+    }
+
     msg_t msg_reply::message_type() const
     {
         return msg_reply::s_message_type;
@@ -365,6 +383,11 @@ namespace dripline
 
     msg_t msg_alert::s_message_type = msg_t::alert;
 
+    msg_t msg_alert::get_message_type()
+    {
+        return msg_alert::s_message_type;
+    }
+
     msg_t msg_alert::message_type() const
     {
         return msg_alert::s_message_type;
@@ -388,6 +411,11 @@ namespace dripline
 
     msg_t msg_info::s_message_type = msg_t::info;
 
+    msg_t msg_info::get_message_type()
+    {
+        return msg_info::s_message_type;
+    }
+
     msg_t msg_info::message_type() const
     {
         return msg_info::s_message_type;
@@ -395,7 +423,7 @@ namespace dripline
 
 
 
-    std::ostream& operator<<( std::ostream& a_os, message::encoding a_enc )
+    DRIPLINE_API std::ostream& operator<<( std::ostream& a_os, message::encoding a_enc )
     {
         static std::map< message::encoding, string > s_enc_strings = { { message::encoding::json, "json" } };
         return a_os << s_enc_strings[ a_enc ];
