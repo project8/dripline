@@ -14,7 +14,7 @@ import (
 
 	"github.com/streadway/amqp"
 	"github.com/kardianos/osext"
-	"code.google.com/p/go-uuid/uuid"
+	"github.com/pborman/uuid"
 
 	"github.com/project8/swarm/Go/logging"
 )
