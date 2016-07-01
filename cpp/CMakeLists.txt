@@ -1,12 +1,12 @@
-# Minimum cmake verison 3.0 required by the way CMake handles rpath information on Mac OSX.
-cmake_minimum_required (VERSION 3.0)
+# Minimum cmake verison 3.1 required for the variable CMAKE_CXX_STANDARD
+cmake_minimum_required (VERSION 3.1)
 
 #########
 # setup #
 #########
 
 cmake_policy( SET CMP0048 NEW ) # version in project()
-project( Dripline VERSION 1.1.0 )
+project( Dripline VERSION 1.1.2 )
 
 list( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scarab/cmake )
 
