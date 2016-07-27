@@ -1,7 +1,7 @@
 Encoding
 ========
 
-The AMQP message body should be formatted in either [JSON](http://json.org) or [msgpack](http://msgpack.org).  The encoding (`application/json` or `application/msgpack`) should be specified in the `content_encoding` field of the AMQP message.
+The AMQP message body should be formatted in [JSON](http://json.org) (formerly or [msgpack](http://msgpack.org), which is now deprecated).  The encoding (`application/json`) should be specified in the `content_encoding` field of the AMQP message.
 
 Structure
 =========
