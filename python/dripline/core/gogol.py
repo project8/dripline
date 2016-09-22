@@ -17,6 +17,7 @@ import pika
 from . import exceptions
 from .message import Message
 from .service import Service
+from .spimescape import Spimescape
 from .utilities import fancy_doc
 
 __all__ = ['Gogol']
@@ -25,8 +26,8 @@ logger = logging.getLogger(__name__)
 
 
 @fancy_doc
-class Gogol(Service):
-    def __init__(self, exchange='alerts', keys=['#'], name=None, **kwargs): 
+class Gogol(Spimescape):
+    def __init__(self, exchange='requests', keys=['#'], name=None, **kwargs):
         '''
         exchange (str): (overrides Service default)
         keys (list): (overrides Service default)
@@ -35,7 +36,10 @@ class Gogol(Service):
         logger.debug('Gogol initializing')
         if name is None:
             name = __name__ + '-' + uuid.uuid1().hex[:12]
-        Service.__init__(self, exchange=exchange, keys=keys, name=name, **kwargs)
+        Spimescape.__init__(self, exchange=exchange, keys=keys, name=name, **kwargs)
+        if isinstance(keys, str):
+           keys = [keys]
+        self._bindings += [["alerts", a_key] for a_key in keys]
 
     def this_consume(self, message, basic_deliver=None):
         raise NotImplementedError('you must set this_consume to a valid function')
@@ -53,5 +57,5 @@ class Gogol(Service):
             raise
 
     def start(self):
-        logger.debug("AlertConsmer consume starting")
+        logger.debug("AlertConsumer consume starting")
         self.run()

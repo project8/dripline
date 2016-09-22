@@ -100,7 +100,7 @@ class Endpoint(object):
         else:
             self.name = name
         self.provider = None
-        self.portal = None
+        self.service = None
         self._calibration = calibration
         self.__lockout_key = None
 
@@ -145,8 +145,7 @@ class Endpoint(object):
             raise exceptions.DriplineAccessDenied('Endpoint <{}> is locked; lockout_key required'.format(self.name))
 
     def handle_request(self, channel, method, properties, request):
-        logger.debug('handling requst:{}'.format(request))
-
+        logger.debug('handling request:{}'.format(request))
         result = None
         retcode = None
         return_msg = None
@@ -197,7 +196,7 @@ class Endpoint(object):
             retcode = 999
         logger.debug('request method execution complete')
         reply = ReplyMessage(payload=result, retcode=retcode, return_msg=return_msg)
-        self.portal.send_reply(properties, reply)
+        self.service.send_reply(properties, reply)
         logger.debug('reply sent')
 
     def _on_get(self, *args, **kwargs):

@@ -43,8 +43,12 @@ class Service(Provider):
         broker (str): The AMQP url to connect with
         exchange (str): Name of the AMQP exchange to connect to
         keys (list|str): binding key or list of binding keys to use listen against
-        name (str|None): name for the amqp queue, automatically generated if None (this behavior supplements the Endpoint arg of the same name)
-        setup_calls (list of dicts): each element is a dictionary describing a method to call. Valid keys are target, method, args, and kwargs, which will be called as service.endpoints[target].method(*args,**kwargs). Note that on_set can be used to assign values to attributes in this syntax.
+        name (str|None): name for the amqp queue, automatically generated if None
+            (this behavior supplements the Endpoint arg of the same name)
+        setup_calls (list of dicts): each element is a dictionary describing a method to call.
+            Valid keys are target, method, args, and kwargs, which will be called as
+            service.endpoints[target].method(*args,**kwargs). Note that on_set can be used to
+            assign values to attributes in this syntax.
         """
         self._broker = broker
         if exchange is None:
@@ -55,9 +59,8 @@ class Service(Provider):
             raise exceptions.DriplineValueError('<keys> is required to __init__ a Service instance')
         else:
             self.keys = keys
-        if 'name' not in kwargs:
-            kwargs['name'] = None
-        if kwargs['name'] is None:
+        self._bindings=[['requests', "broadcast.#"]]
+        if 'name' not in kwargs or kwargs['name'] is None:
             kwargs['name'] = 'unknown_service_' + str(uuid.uuid4())[1:12]
         Provider.__init__(self, **kwargs)
         self.name = kwargs['name']
@@ -243,14 +246,10 @@ class Service(Provider):
         :param pika.frame.Method method_frame: The Queue.DeclareOk frame
 
         """
-        for key in self.keys:
-            logger.debug('Binding {} to {} with {}'.format(
-                         self._exchange, self.name, key)
-                        )
-            self._channel.queue_bind(self.on_bindok, self.name,
-                                     self._exchange, key)
-            self._channel.queue_bind(self.on_bindok, self.name,
-                                     self._exchange, 'broadcast.#')
+        for a_binding in self._bindings:
+            logger.debug('Binding {} to {} with {}'.format(a_binding[0], self.name, a_binding[1]))
+            self._channel.queue_bind(self.on_bindok, self.name,a_binding[0], a_binding[1])
+
 
     def on_bindok(self, unused_frame):
         """Invoked by pika when the Queue.Bind method has completed. At this
@@ -332,7 +331,7 @@ class Service(Provider):
     def on_request_message(*args, **kwargs):
         '''
         '''
-        raise exceptions.DriplineMethodNotSupportedError('base service does not handle request messages') 
+        raise exceptions.DriplineMethodNotSupportedError('base service does not handle request messages')
 
     def on_reply_message(*args, **kwargs):
         '''
@@ -347,12 +346,12 @@ class Service(Provider):
     def on_alert_message(*args, **kwargs):
         '''
         '''
-        raise exceptions.DriplineMethodNotSupportedError('base service does not handle alert messages') 
+        raise exceptions.DriplineMethodNotSupportedError('base service does not handle alert messages')
 
     def on_any_message(*args, **kwargs):
         '''
         '''
-        raise exceptions.DriplineMethodNotSupportedError('base service does not handle generic messages') 
+        raise exceptions.DriplineMethodNotSupportedError('base service does not handle generic messages')
 
     def acknowledge_message(self, delivery_tag):
         """Acknowledge the message delivery from RabbitMQ by sending a
@@ -470,7 +469,7 @@ class Service(Provider):
             connection = pika.BlockingConnection(parameters)
         except pika.exceptions.AMQPConnectionError:
             raise exceptions.DriplineAMQPConnectionError('unable to connect to broker: {}'.format(self._broker))
-            
+
         channel = connection.channel()
         channel.confirm_delivery()
         result = channel.queue_declare(queue='request_reply'+str(uuid.uuid4()),
@@ -481,7 +480,6 @@ class Service(Provider):
                            queue=result.method.queue,
                            routing_key=result.method.queue,
                           )
-        
         correlation_id = str(uuid.uuid4())
         self.__ret_val = None
         def on_response(ch, method, props, body):
@@ -568,3 +566,4 @@ class Service(Provider):
         reply.sender_info['service_name'] = self.name
         #import ipdb;ipdb.set_trace()
         self.send_message(target=properties.reply_to, message=reply, properties=properties, ensure_delivery=False)
+        logger.info("reply sent")
