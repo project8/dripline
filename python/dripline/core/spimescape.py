@@ -31,16 +31,14 @@ class Spimescape(Service):
     """
     Like a node, but pythonic
     """
-    def __init__(self, exchange=None, **kwargs):
+    def __init__(self, **kwargs):
         '''
         '''
-        if exchange is None:
-            exchange = 'requests'
-        kwargs['exchange'] = exchange
-
+        if 'exchange' not in kwargs or kwargs['exchange'] is None:
+            kwargs['exchange'] = 'requests'
         Service.__init__(self, **kwargs)
         self.add_endpoint(self)
-        
+
         self._responses = {}
 
     @property
@@ -56,9 +54,10 @@ class Spimescape(Service):
         '''
         if endpoint.name in self.endpoints:
             raise ValueError('endpoint ({}) already present'.format(endpoint.name))
-        self.endpoints[endpoint.name] = endpoint
         setattr(endpoint, 'store_value', self.send_alert)
-        setattr(endpoint, 'portal', self)
+        setattr(endpoint, 'service', self)
+        self._bindings.append(["requests", endpoint.name+'.#'])
+        Provider.add_endpoint(self, endpoint)
 
     def on_request_message(self, channel, method, header, body):
         logger.info('request received by {}'.format(self.name))
