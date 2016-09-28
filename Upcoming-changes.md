@@ -8,6 +8,10 @@ In general, it is our goal that the dripline standard be stable, and that new us
 - add `set_condition` directive to broadcast (not implemented anywhere currently). See description on use protocol
 - Require that ping and broadcast OP_CMD commands are not subject to lockout state. Lock and unlock directives should continue to respect lockout keys for particular services/endpoints unless the "force" option is used
 
+# Additions/changes to glossary
+
+- "routing key target": all characters in a routing key prior to the first period. Complement of the routing key specifier. Within implementations of dripline, this is the component commonly used with an exact match when binding a queue, with the RKS generally being wildcarded.
+
 # Deprecations
 
 - The T_INFO message type is never used and it is not clear where it would be needed/desired. Information could easily be sent either in a T_ALERT or a T_REPLY as appropriate
