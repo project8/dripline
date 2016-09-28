@@ -3,6 +3,7 @@
 ### Official Spec
 [[Wire Protocol]]  
 [[Use Protocol]]  
+[[Glossary]]  
 
 ### About
 [[Upcoming changes]]  
