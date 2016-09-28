@@ -11,7 +11,7 @@ Structure
 | `msgtype` | integer | All | Reply (2), Request (3), Alert (4), Info (5) _Info will be deprecated in the next release_|
 | `msgop`   | integer | Requests | Set (0), Get (1), Config (6), Send (7), Run (8), Command (9) |
 | `timestamp` | string | All | Following the [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format |
-| `lockout_key` | string | Requests | 16 hexidecimal digits (see [[lockout|Conventions#lockout]]) |
+| `lockout_key` | string | Requests | 16 hexidecimal digits (see [[lockout|use-protocol#lockout]]) |
 | `sender_info.package` | string | All | Software package used to send the message |
 | `sender_info.exe` | string | All | Full path of the executable used to send the message |
 | `sender_info.version` | string | All | Sender package version |
