@@ -1,6 +1,6 @@
 The following sections summarize various convention which all dripline-compliant implementations should strive to follow.
 
-[Exchanges](#amqp-exchanges)
+[Exchanges](#amqp-exchanges)  
 [Broadcast Requests](#broadcast-requests)  
 [Alert Routing keys](#alert-routing-keys)  
 [Resource Lockout](#lockout)  
