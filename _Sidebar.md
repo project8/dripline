@@ -2,7 +2,7 @@
 
 ### Reference
 [[Wire Protocol]]  
-[[Conventions]]  
+[[Use Protocol]]  
 
 ### About
 [[Design Principles|Design]]  
