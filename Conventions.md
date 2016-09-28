@@ -7,13 +7,28 @@ The following sections summarize various convention which all dripline-compliant
 
 Broadcast Requests
 ------------------
-In addition to binding against the name of the endpoint (or endpoints) which compose a service, all services shall also bind against the `broadcast.#` routing key. All services must respond to requests sent to matching binding keys (currently only ever an OP_CMD) and must not generate additional errors if the Reply is undeliverable. Since every running service is expected to respond, and there is no guaranteed order or timing, any process sending such a request should deal with this properly (ie, accept multiple replies, wait "long enough" for replies to come, cope with inconsistent reply order) if it cares. The following commands must be supported:
-- `lock`: See [below](#lockout). Note that a service receiving this will attempt to lock all of its endpoints.
-- `unlock`: See [below](#lockout). Note that a service receiving this will attempt to unlock all of its endpoints.
-- `ping`: No arguments. Send a Reply message with empty payload. This is meant as a useful means of discovering the full set of running/responsive services. It may not be used to trigger any other behavior.
-- `set_condition`: Single integer argument. Any unexpected value should result in return code 304 (Value Error). A particular dripline deployment can define a set of conditions as needed. It is encouraged to use large values with reasonable spacing, a la HTML or dripline error values, to facilitate intermediate values being defined later. It is important to note that set_condition is a bit of a panic button, the order in which services receive/respond to set_condition is not well defined and every service is expected to respond immediately (without trying to coordinate with other services). It is designed to support notions such as "abort data taking" or "danger! make everything as safe as possible" and is not suited to situations where coordination is desired or when one wants to carefully check that each service succeeded in getting to the desired state before taking further action.
+In addition to binding against the name of the endpoint (or endpoints) which compose a service, all services shall also bind against the `broadcast.#` routing key. All services must respond to requests sent to matching binding keys (currently only ever an OP_CMD) and must not generate additional errors if the Reply is undeliverable. Since every running service is expected to respond, and there is no guaranteed order or timing, any process sending such a request should deal with this properly (ie, accept multiple replies, wait "long enough" for replies to come, cope with inconsistent reply order) if it cares. The following subsections cover the commands which must be supported.
 
 Note that it is only ever appropriate to use broadcasts when a command is expected to apply to every running service regardless of what that set includes. It is not acceptable to use this to as a shorthand for interacting with a known subset of endpoints (in the hopes that all others will ignore it). In that use-case, one should create a single endpoint which applies the desired logic to contact the intended set of endpoints.
+
+lock
+====
+See [below](#lockout). Note that a service receiving this will attempt to lock all of its endpoints.
+
+unlock
+======
+See [below](#lockout). Note that a service receiving this will attempt to unlock all of its endpoints.
+
+ping
+====
+No arguments. Send a Reply message with empty payload. This is meant as a useful means of discovering the full set of running/responsive services. It may not be used to trigger any other behavior.
+
+set_condition
+=============
+Single integer argument. Any unexpected value should result in return code 304 (Value Error). A particular dripline deployment can define a set of conditions as needed. It is encouraged to use large values with reasonable spacing, a la HTML or dripline error values, to facilitate intermediate values being defined later. 
+
+It is important to note that set_condition is a bit of a panic button, the order in which services receive/respond to set_condition is not well defined and every service is expected to respond immediately (without trying to coordinate with other services). It is designed to support notions such as "abort data taking" or "danger! make everything as safe as possible" and is not suited to situations where coordination is desired or when one wants to carefully check that each service succeeded in getting to the desired state before taking further action.
+
 
 Alert Routing Keys
 ------------------
