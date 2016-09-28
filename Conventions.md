@@ -44,10 +44,12 @@ A service may implement a lockout system to restrict access for certain types of
 
 The following request types are lockable:
 - OP_SET
-- OP_CMD
+- OP_CMD*
 - OP_SEND
 - OP_RUN
 - OP_CONFIG (if changing the state of the service; reads are not lockable)
+
+*Unlock is a cmd but can bypass the lock with a force argument (see below). Broadcast commands `ping` and `set_condition` ignore lockout.
 
 The lockout key is 16-bytes long. When represented as a string, it will be formatted as 16 hexidecimal characters, in one of these ways:
 - ``0123456789abcdef0123456789abcdef``
