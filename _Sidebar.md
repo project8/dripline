@@ -1,6 +1,6 @@
 ## [[Dripline|Home]]
 
-### Reference
+### Official Spec
 [[Wire Protocol]]  
 [[Use Protocol]]  
 
