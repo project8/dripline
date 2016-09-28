@@ -8,6 +8,8 @@ In general, it is our goal that the dripline standard be stable, and that new us
 - add `set_condition` directive to broadcast (not implemented anywhere currently). See description on use protocol
 - Require that ping and broadcast OP_CMD commands are not subject to lockout state. Lock and unlock directives should continue to respect lockout keys for particular services/endpoints unless the "force" option is used
 
+- Require that all endpoints respond to any request "quickly" (whatever that means). The expectation should be that one can send a request and get an immediate reply. If a task "takes some time" then it should be started (which can receive a positive reply indicating that the task is starting), polled (further requests with replies that indicate that the task is executing or not. It may be desirable for non-execution to include more details, such as if the most recent execution completed successfully and/or a timestamp of when the last execution completed), and then results retrieved from a cache maintained by the endpoint. It is probably also good if the process can be forcefully aborted in a way that restores a nominal state.
+
 # Additions/changes to glossary
 
 - "routing key target": all characters in a routing key prior to the first period. Complement of the routing key specifier. Within implementations of dripline, this is the component commonly used with an exact match when binding a queue, with the RKS generally being wildcarded.
