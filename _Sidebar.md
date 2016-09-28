@@ -5,6 +5,6 @@
 [[Use Protocol]]  
 
 ### About
-[[Upcoming changes]]
+[[Upcoming changes]]  
 [[Design Principles|Design]]  
 [[Version History|Version]]  
