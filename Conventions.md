@@ -1,9 +1,21 @@
 The following sections summarize various convention which all dripline-compliant implementations should strive to follow.
 
+[Exchanges](#amqp-exchanges)
 [Broadcast Requests](#broadcast-requests)  
-[Alert Exchange Routing keys](#alert-routing-keys)  
+[Alert Routing keys](#alert-routing-keys)  
 [Resource Lockout](#lockout)  
 
+# AMQP Exchanges
+All dripline messages are sent using one of two exchanges, `alerts` and `requests`. They differ both in the types of messages they handle and the types of bindings made.
+
+## Alerts
+The alerts exchange is used for one directional information transfer, always in the form of a T_ALERT message type. These messages are not delivered to any particular consumer, and may well be of interest to zero, one, or many consumers. All messages have a routing key which begins with an indication of the type of content, and may have further details. The accepted forms are as follows:
+
+* sensor_value.\<sensor_name\>: For values to be stored into the slow controls database tables for numeric_data and/or string_data. Currently the payload needs to include "value_raw" or "memo" and optionally "value_cal" to be inserted.  
+* status_message.\<slack_channel\>.\<origin_name\>: (where \<\> indicate values which will usually be bound with a '#' and which encode particular information), a system status message from a process which does not communicate directly with slack (or other messaging service) itself. Dripline will provide a slack_relay which posts a message which is "from" <origin_name> to a channel in the project 8 slack named "#<slack_channel>" (note that '#' is reserved in routing keys in AMQP and always the start of a channel name so it is assumed) and with text == the python's str() of the message.payload.
+
+## Requests
+The requests exchange is used for round-trip information transfers in the form of T_Request messages and their resulting T_Reply messages. Routing keys for requests begin with the name of the endpoint being targeted (or broadcast, for that [special case described below](#broadcast-requests)), and may include a routing key specifier to indicate a particular command (for an OP_CMD) or attribute (for an OP_GET or OP_SET which configures an endpoint rather than assigning or querying the endpoint itself). The T_REPLY is then sent to the routing key specified in the properties provided along with the AMQP message.
 
 # Broadcast Requests
 
@@ -22,19 +34,13 @@ See [below](#lockout). Note that a service receiving this will attempt to unlock
 No arguments. Send a Reply message with empty payload. This is meant as a useful means of discovering the full set of running/responsive services. It may not be used to trigger any other behavior.
 
 ## set_condition
-_This command will be introduced in v2.1.0_
+_This command will be introduced in v2.1.0_  
 Single integer argument. Any unexpected value should result in return code 304 (Value Error). A particular dripline deployment can define a set of conditions as needed. It is encouraged to use large values with reasonable spacing, a la HTML or dripline error values, to facilitate intermediate values being defined later. 
 
 It is important to note that set_condition is a bit of a panic button, the order in which services receive/respond to set_condition is not well defined and every service is expected to respond immediately (without trying to coordinate with other services). It is designed to support notions such as "abort data taking" or "danger! make everything as safe as possible" and is not suited to situations where coordination is desired or when one wants to carefully check that each service succeeded in getting to the desired state before taking further action.
 
 
-# Alert Routing Keys
 
-The alerts exchange is used to "broadcast" messages. These messages are not directed to any particular consumer, and may well be of equal interest to no consumers or many consumers. Messages sent out on this exchange do not receive a reply. As with everything, we define some standards so that we can catch and parse messages in a meaningful way. Currently reserved routing keys are:
-
-* sensor_value.\<sensor_name\>: For values to be stored into the slow controls database tables for numeric_data and/or string_data. Currently the payload needs to include "value_raw" or "memo" and optionally "value_cal" to be inserted.  
-* status_message.\<slack_channel\>.\<origin_name\>: (where \<\> indicate values which will usually be bound with a '#' and which encode particular information), a system status message from a process which does not communicate directly with slack (or other messaging service) itself. Dripline will provide a slack_relay which posts a message which is "from" <origin_name> to a channel in the project 8 slack named "#<slack_channel>" (note that '#' is reserved in routing keys in AMQP and always the start of a channel name so it is assumed) and with text == the python's str() of the message.payload.
-* ... damn, I was sure there was one more but I can't place it now
 
 # Lockout
 
