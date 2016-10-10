@@ -51,7 +51,6 @@ The following request types are lockable:
 - OP_CMD*
 - OP_SEND
 - OP_RUN
-- OP_CONFIG (if changing the state of the service; reads are not lockable)
 
 *Unlock is a cmd but can bypass the lock with a force argument (see below). Broadcast commands `ping` and `set_condition` ignore lockout.
 
