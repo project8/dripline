@@ -125,7 +125,7 @@ func (service *AmqpService) SendRequest(toSend Request, replyTimeout time.Durati
 	// First we create a new channel, create the reply queue on that channel, and start consuming
 	replyChannel, chanErr := service.connection.Channel()
 	if chanErr != nil {
-		logging.Log.Critical("Unable to get the reply channel:\n\t%v", chanErr.Error())
+		logging.Log.Criticalf("Unable to get the reply channel:\n\t%v", chanErr.Error())
 		service.DoneSignal <- true
 		return
 	}
@@ -133,7 +133,7 @@ func (service *AmqpService) SendRequest(toSend Request, replyTimeout time.Durati
 
 	replyQueue, declareErr := replyChannel.QueueDeclare("", false, true, true, false, nil)
 	if declareErr != nil {
-		logging.Log.Error("Unable to declare the reply queue: %v", declareErr)
+		logging.Log.Errorf("Unable to declare the reply queue: %v", declareErr)
 		e = declareErr
 		return
 	}
@@ -142,14 +142,14 @@ func (service *AmqpService) SendRequest(toSend Request, replyTimeout time.Durati
 	toSend.ReplyTo = queueName
 	bindErr := replyChannel.QueueBind(queueName, queueName, service.Sender.RequestExchangeName, false, nil)
 	if bindErr != nil {
-		logging.Log.Error("Unable to bind the reply queue <%s>:\n\t%v", queueName, bindErr)
+		logging.Log.Errorf("Unable to bind the reply queue <%s>:\n\t%v", queueName, bindErr)
 		e = bindErr
 		return
 	}
 
 	amqpReplyChan, consumeErr := replyChannel.Consume(queueName, "", false, true, true, false, nil)
 	if consumeErr != nil {
-		logging.Log.Error("Unable start consuming from reply queue <%s>:\n\t%v", queueName, consumeErr.Error())
+		logging.Log.Errorf("Unable start consuming from reply queue <%s>:\n\t%v", queueName, consumeErr.Error())
 		e = consumeErr
 		return
 	}
@@ -203,14 +203,14 @@ func (service *AmqpService) SendRequest(toSend Request, replyTimeout time.Durati
 				},
 			)
 			if decodeErr != nil {
-				logging.Log.Error("An error occurred while decoding a message: \n\t%v", decodeErr)
+				logging.Log.Errorf("An error occurred while decoding a message: \n\t%v", decodeErr)
 				return
 			}
 		}
 
 		logging.Log.Debug("Closing the reply channel")
 		if err := replyChannel.Close(); err != nil {
-			logging.Log.Error("Error while closing reply queue:\n\t%v", err)
+			logging.Log.Errorf("Error while closing reply queue:\n\t%v", err)
 		}
 
 		return
@@ -261,7 +261,7 @@ func (service *AmqpService) SubscribeToRequests(routingKey string) (e error) {
 	}
 	service.Receiver.subscriptionCount++
 	service.beginConsuming()
-	logging.Log.Debug("Subscription established: ex(%s) @ rk(%s) --> q(%s)", service.Sender.RequestExchangeName, routingKey, service.Receiver.QueueName)
+	logging.Log.Debugf("Subscription established: ex(%s) @ rk(%s) --> q(%s)", service.Sender.RequestExchangeName, routingKey, service.Receiver.QueueName)
 	return
 }
 /*
@@ -289,7 +289,7 @@ func (service *AmqpService) SubscribeToAlerts(routingKey string) (e error) {
 	}
 	service.Receiver.subscriptionCount++
 	service.beginConsuming()
-	logging.Log.Debug("Subscription established: ex(%s) @ rk(%s) --> q(%s)", service.Sender.AlertExchangeName, routingKey, service.Receiver.QueueName)
+	logging.Log.Debugf("Subscription established: ex(%s) @ rk(%s) --> q(%s)", service.Sender.AlertExchangeName, routingKey, service.Receiver.QueueName)
 	return
 }
 
@@ -304,7 +304,7 @@ func (service *AmqpService) SubscribeToInfos(routingKey string) (e error) {
 	}
 	service.Receiver.subscriptionCount++
 	service.beginConsuming()
-	logging.Log.Debug("Subscription established: ex(%s) @ rk(%s) --> q(%s)", service.Sender.InfoExchangeName, routingKey, service.Receiver.QueueName)
+	logging.Log.Debugf("Subscription established: ex(%s) @ rk(%s) --> q(%s)", service.Sender.InfoExchangeName, routingKey, service.Receiver.QueueName)
 	return
 }
 
@@ -345,12 +345,12 @@ func (service *AmqpService) beginConsuming() {
 	}
 	messageQueue, consumeErr := service.channel.Consume(service.Receiver.QueueName, "", false, true, true, false, nil)
 	if consumeErr != nil {
-		logging.Log.Critical("Unable start consuming from queue <%s>:\n\t%v", service.Receiver.QueueName, consumeErr.Error())
+		logging.Log.Criticalf("Unable start consuming from queue <%s>:\n\t%v", service.Receiver.QueueName, consumeErr.Error())
 		service.DoneSignal <- true
 		return
 	}
 	service.Receiver.messageQueue = messageQueue
-	logging.Log.Debug("Started consuming on queue %s", service.Receiver.QueueName)
+	logging.Log.Debugf("Started consuming on queue %s", service.Receiver.QueueName)
 	// reset the amqpLoop, because the message queue has been updated
 	service.stopQueue <- false
 	return
@@ -369,14 +369,20 @@ func runAmqpService(service *AmqpService) {
 	// Deferred command: close the connection
 	connection, receiveErr := amqp.Dial(service.BrokerAddress)
 	if receiveErr != nil {
-		logging.Log.Critical("Unable to connect to the AMQP broker at (%s) for receiving:\n\t%v", service.BrokerAddress, receiveErr.Error())
-		service.DoneSignal <- true
-		return
+		logging.Log.Warning("Unable to connect on first attempt.  Waiting 10 seconds to try again.")
+		time.Sleep(10 * time.Second)
+		logging.Log.Debug("Second attempt to connect")
+		connection, receiveErr = amqp.Dial(service.BrokerAddress)
+		if receiveErr != nil {
+			logging.Log.Criticalf("Unable to connect to the AMQP broker at (%s) for receiving:\n\t%v", service.BrokerAddress, receiveErr.Error())
+			service.DoneSignal <- true
+			return
+		}
 	}
 	defer connection.Close()
 	service.connection = connection
 	service.Connected = true
-	logging.Log.Debug("Connected to AMQP broker (%s)", service.BrokerAddress)
+	logging.Log.Debugf("Connected to AMQP broker (%s)", service.BrokerAddress)
 
 	// Monitor for connection closing
 	connCloseChan := make(chan *amqp.Error, 10)
@@ -395,7 +401,7 @@ func runAmqpService(service *AmqpService) {
 		// Deferred command: close the channel
 		channel, chanErr := connection.Channel()
 		if chanErr != nil {
-			logging.Log.Critical("Unable to get the AMQP channel:\n\t%v", chanErr.Error())
+			logging.Log.Criticalf("Unable to get the AMQP channel:\n\t%v", chanErr.Error())
 			service.DoneSignal <- true
 			return
 		}
@@ -411,7 +417,7 @@ func runAmqpService(service *AmqpService) {
 				service.DoneSignal <- true
 				return
 			}
-			logging.Log.Debug("Queue declared: %s", service.Receiver.QueueName)
+			logging.Log.Debugf("Queue declared: %s", service.Receiver.QueueName)
 
 			// Try to begin consuming, which will only actually happen if there are already subscriptions
 			service.beginConsuming()
@@ -424,7 +430,7 @@ func runAmqpService(service *AmqpService) {
 		if service.Sender.RequestExchangeName != "" {
 			exchangeErr := service.channel.ExchangeDeclare(service.Sender.RequestExchangeName, "topic", false, false, false, false, nil)
 			if exchangeErr != nil {
-				logging.Log.Critical("Unable to declare the requests exchange (%s)", service.Sender.RequestExchangeName)
+				logging.Log.Criticalf("Unable to declare the requests exchange (%s)", service.Sender.RequestExchangeName)
 				service.DoneSignal <- true
 				return
 			}
@@ -434,7 +440,7 @@ func runAmqpService(service *AmqpService) {
 		if service.Sender.AlertExchangeName != "" {
 			exchangeErr := service.channel.ExchangeDeclare(service.Sender.AlertExchangeName, "topic", false, false, false, false, nil)
 			if exchangeErr != nil {
-				logging.Log.Critical("Unable to declare the alerts exchange (%s)", service.Sender.AlertExchangeName)
+				logging.Log.Criticalf("Unable to declare the alerts exchange (%s)", service.Sender.AlertExchangeName)
 				service.DoneSignal <- true
 				return
 			}
@@ -444,7 +450,7 @@ func runAmqpService(service *AmqpService) {
 		if service.Sender.InfoExchangeName != "" {
 			exchangeErr := service.channel.ExchangeDeclare(service.Sender.InfoExchangeName, "topic", false, false, false, false, nil)
 			if exchangeErr != nil {
-				logging.Log.Critical("Unable to declare the infos exchange (%s)", service.Sender.InfoExchangeName)
+				logging.Log.Criticalf("Unable to declare the infos exchange (%s)", service.Sender.InfoExchangeName)
 				service.DoneSignal <- true
 				return
 			}
@@ -462,7 +468,7 @@ func runAmqpService(service *AmqpService) {
 	defer service.channel.Close()
 	defer func() {
 		if _, err := service.channel.QueueDelete(service.Receiver.QueueName, false, false, false); err != nil {
-			logging.Log.Error("Error while deleting queue:\n\t%v", err)
+			logging.Log.Errorf("Error while deleting queue:\n\t%v", err)
 		}
 	}()
 
@@ -492,7 +498,7 @@ amqpLoop:
 				break amqpLoop
 			}
 
-			logging.Log.Warning("AMQP connection was closed: %v", (*connectionClosed).Reason)
+			logging.Log.Warningf("AMQP connection was closed: %v", (*connectionClosed).Reason)
 			break amqpLoop
 		case channelCanceled, chanOpen := <-channelCancelChan:
 			if ! chanOpen {
@@ -501,7 +507,7 @@ amqpLoop:
 			}
 
 			// If the channel was canceled, we probably want to re-open it
-			logging.Log.Warning("AMQP channel was canceled: %s", channelCanceled)
+			logging.Log.Warningf("AMQP channel was canceled: %s", channelCanceled)
 			logging.Log.Info("Attempting to re-open the channel")
 			channelSetupFunc()
 			break amqpLoop
@@ -511,7 +517,7 @@ amqpLoop:
 				break amqpLoop
 			}
 
-			logging.Log.Warning("AMQP channel was closed: %v", (*channelClosed).Reason)
+			logging.Log.Warningf("AMQP channel was closed: %v", (*channelClosed).Reason)
 			break amqpLoop
 		case request, chanOpen := <-service.Sender.requestChan:
 			if ! chanOpen {
@@ -523,7 +529,7 @@ amqpLoop:
 			// encode the message
 			body, encErr := (&request).Encode()
 			if encErr != nil {
-				logging.Log.Error("An error occurred while encoding a request message: \n\t%v", encErr)
+				logging.Log.Errorf("An error occurred while encoding a request message: \n\t%v", encErr)
 				continue amqpLoop
 			}
 			(&request).send(service.channel, body)
@@ -537,7 +543,7 @@ amqpLoop:
 			// encode the message
 			body, encErr := (&reply).Encode()
 			if encErr != nil {
-				logging.Log.Error("An error occurred while encoding a reply message: \n\t%v", encErr)
+				logging.Log.Errorf("An error occurred while encoding a reply message: \n\t%v", encErr)
 				continue amqpLoop
 			}
 			(&reply).send(service.channel, body)
@@ -551,7 +557,7 @@ amqpLoop:
 			// encode the message
 			body, encErr := (&alert).Encode()
 			if encErr != nil {
-				logging.Log.Error("An error occurred while encoding an alert message: \n\t%v", encErr)
+				logging.Log.Errorf("An error occurred while encoding an alert message: \n\t%v", encErr)
 				continue amqpLoop
 			}
 			(&alert).send(service.channel, body)
@@ -565,7 +571,7 @@ amqpLoop:
 			// encode the message
 			body, encErr := (&info).Encode()
 			if encErr != nil {
-				logging.Log.Error("An error occurred while encoding an info message: \n\t%v", encErr)
+				logging.Log.Errorf("An error occurred while encoding an info message: \n\t%v", encErr)
 				continue amqpLoop
 			}
 			(&info).send(service.channel, body)
@@ -595,7 +601,7 @@ amqpLoop:
 				},
 			)
 			if decodeErr != nil {
-				logging.Log.Error("An error occurred while decoding a message: \n\t%v", decodeErr)
+				logging.Log.Errorf("An error occurred while decoding a message: \n\t%v", decodeErr)
 				continue amqpLoop
 			}
 
@@ -622,12 +628,12 @@ func (message *Message) send(channel *amqp.Channel, body []byte) {
 	}
 
 	//logging.Log.Printf("[amqp sender] Encoded message:\n\t%v", amqpMessage)
-	logging.Log.Debug("Sending message to routing key <%s>", (*message).Target)
+	logging.Log.Debugf("Sending message to routing key <%s>", (*message).Target)
 
 	// Publish!
 	pubErr := channel.Publish((*message).exchange, (*message).Target, false, false, amqpMessage)
 	if pubErr != nil {
-		logging.Log.Error("Error while sending message:\n\t%v", pubErr)
+		logging.Log.Errorf("Error while sending message:\n\t%v", pubErr)
 	}
 }
 
