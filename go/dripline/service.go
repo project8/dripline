@@ -369,9 +369,15 @@ func runAmqpService(service *AmqpService) {
 	// Deferred command: close the connection
 	connection, receiveErr := amqp.Dial(service.BrokerAddress)
 	if receiveErr != nil {
-		logging.Log.Critical("Unable to connect to the AMQP broker at (%s) for receiving:\n\t%v", service.BrokerAddress, receiveErr.Error())
-		service.DoneSignal <- true
-		return
+		logging.Log.Warning("Unable to connect on first attempt.  Waiting 10 seconds to try again.")
+		time.Sleep(10 * time.Second)
+		logging.Log.Debug("Second attempt to connect")
+		connection, receiveErr = amqp.Dial(service.BrokerAddress)
+		if receiveErr != nil {
+			logging.Log.Critical("Unable to connect to the AMQP broker at (%s) for receiving:\n\t%v", service.BrokerAddress, receiveErr.Error())
+			service.DoneSignal <- true
+			return
+		}
 	}
 	defer connection.Close()
 	service.connection = connection
