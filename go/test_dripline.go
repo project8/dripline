@@ -53,17 +53,17 @@ func main() {
 
 		// Expect to receive a request from Alice
 		if subscribeErr := bob.SubscribeToRequests("dt_bob"); subscribeErr != nil {
-			logging.Log.Critical("Bob could not subscribe to requests: %v", subscribeErr)
+			logging.Log.Criticalf("Bob could not subscribe to requests: %v", subscribeErr)
 			return
 		}
 
 		request := <- bob.Receiver.RequestChan
-		logging.Log.Info("Bob has received a request: %v", request)
+		logging.Log.Infof("Bob has received a request: %v", request)
 
 		senderInfo := dripline.PrepareSenderInfo("dripline", "dripline_test", "0.0", "abcdefg", "localhost", "Bob")
 		reply := dripline.PrepareReplyToRequest(request, dripline.RCSuccess, "Received message!", senderInfo)
 		if sendErr := bob.SendReply(reply); sendErr != nil {
-			logging.Log.Critical("Bob could not send the reply: %v", sendErr)
+			logging.Log.Criticalf("Bob could not send the reply: %v", sendErr)
 			return
 		}
 		logging.Log.Info("Bob has sent the reply")
@@ -88,14 +88,14 @@ func main() {
 	request := dripline.PrepareRequest("dt_bob", "application/json", dripline.MOCommand, senderInfo)
 	replyChan, sendErr := alice.SendRequest(request)
 	if sendErr != nil {
-		logging.Log.Critical("Alice could not send the request: %v", sendErr)
+		logging.Log.Criticalf("Alice could not send the request: %v", sendErr)
 		return
 	}
 	logging.Log.Info("Alice has sent the request")
 
 	logging.Log.Info("Alice is awaiting the reply from Bob")
 	reply := <- replyChan
-	logging.Log.Info("Alice has received a reply: %v", reply)
+	logging.Log.Infof("Alice has received a reply: %v", reply)
 
 	alice.Stop()
 	logging.Log.Info("Alice has stopped")

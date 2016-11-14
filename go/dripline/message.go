@@ -144,7 +144,7 @@ func DecodeAndHandle(amqpMessage *(amqp.Delivery), reqFunc func(Request), replyF
 		switch message.MsgType {
 		case MTRequest:
 			if msgopIfc, msgopPresent := buffer["msgop"]; msgopPresent == false {
-				logging.Log.Error("Request message is missing a required element:\n\tmsgop: %v", msgopPresent)
+				logging.Log.Errorf("Request message is missing a required element:\n\tmsgop: %v", msgopPresent)
 				e = fmt.Errorf("Request message is missing a required element:\n\tmsgop: %v", msgopPresent)
 				return
 			} else {
@@ -243,7 +243,7 @@ func decodeBuffer(encoded []byte, encoding string) (buffer map[string]interface{
 		//decoder := codec.NewDecoderBytes(encoded, handle)
 		//jsonErr := decoder.Decode(&buffer)
 		if e != nil {
-			logging.Log.Error("Unable to decode JSON-encoded message:\n\t%v", e)
+			logging.Log.Errorf("Unable to decode JSON-encoded message:\n\t%v", e)
 		}
 	case "application/msgpack":
 		//log.Printf("this is a msgpack message")
@@ -251,11 +251,11 @@ func decodeBuffer(encoded []byte, encoding string) (buffer map[string]interface{
 		decoder := codec.NewDecoderBytes(encoded, handle)
 		msgpackErr := decoder.Decode(&buffer)
 		if msgpackErr != nil {
-			logging.Log.Error("Unable to decode msgpack-encoded message:\n\t%v", msgpackErr)
+			logging.Log.Errorf("Unable to decode msgpack-encoded message:\n\t%v", msgpackErr)
 			e = msgpackErr
 		}
 	default:
-		logging.Log.Error("Message content encoding is not understood: %s", encoding)
+		logging.Log.Errorf("Message content encoding is not understood: %s", encoding)
 		e = fmt.Errorf("Message content encoding is not understood: %s", encoding)
 	}
 	return
