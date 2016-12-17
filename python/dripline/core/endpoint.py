@@ -275,6 +275,25 @@ class Endpoint(object):
         '''
         return None
 
+    def set_condition(self, *args, **kwargs):
+        '''
+        To actually do something inside a class, the set_condition should be implemented in the class itself.
+        '''
+        logger.debug('args are: {}'.format(args))
+        logger.debug('kwargs are: {}'.format(kwargs))
+
+        for key,endpoint in self.endpoints.items():
+            # if key.endswith('_service'):
+            #     logger.debug('{} is a Spimescape service: skipped!'.format(key))
+            #     continue
+            logger.info('Setting condition of {}: {}'.format(key,args))
+            if hasattr(endpoint, '_set_condition'):
+                result = getattr(endpoint, '_set_condition')(*args, **kwargs)
+                print(result)
+            else:
+                logger.debug('{} has no _set_condition attribute, skipped!'.format(key))
+        return None
+
     @property
     def is_locked(self):
         return bool(self.__lockout_key)
