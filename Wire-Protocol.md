@@ -1,14 +1,14 @@
 Encoding
 ========
 
-The AMQP message body should be formatted in [JSON](http://json.org) (formerly or [msgpack](http://msgpack.org), which is now deprecated).  The encoding (`application/json`) should be specified in the `content_encoding` field of the AMQP message.
+The AMQP message body should be formatted in [JSON](http://json.org).  The encoding (`application/json`) should be specified in the `content_encoding` field of the AMQP message.
 
 Structure
 =========
 
 | Field | Type | Required | Values |
 |:------|:-----|:---------|:-------|
-| `msgtype` | integer | All | Reply (2), Request (3), Alert (4), Info (5) _Info will be deprecated in the next release_|
+| `msgtype` | integer | All | Reply (2), Request (3), Alert (4) |
 | `msgop`   | integer | Requests | Set (0), Get (1), Config (6), Send (7), Run (8), Command (9) |
 | `timestamp` | string | All | Following the [RFC3339](https://www.ietf.org/rfc/rfc3339.txt) format |
 | `lockout_key` | string | Requests | 16 hexidecimal digits (see [[lockout|use-protocol#lockout]]) |
