@@ -74,3 +74,5 @@ A lockout system follows the following rules:
   - If a service is not locked, a warning code 1 will be returned.
   - if the service was locked, and was successfully unlocked, success code 0 will be returned.
   - The lock may be forced to disable by providing the field `"force": true` in the payload of the request. The value of the field should be a boolean.  This exception is intended to allow access to services to be regained in the event that the lockout key is lost; as mentioned above, the lockout is intended to avoid stupid mistakes, rather than as a true security feature.
+
+OP_CMD requests sent to `broadcast.#`, except `lock` and `unlock` commands, should ignore the lockout state.
