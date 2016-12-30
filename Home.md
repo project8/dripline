@@ -1,5 +1,8 @@
 # Dripline
 
+## Current Version
+v2.1.0
+
 ## Summary
 
 Dripline is a mostly [REST](https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm)-inspired framework for control systems developed by [Project 8](http://www.project8.org).
@@ -11,4 +14,4 @@ It comprises two components:
 The current version of the framework, along with the version history and planned future developments are listed on [[this page|Version]].  The summary of the [[guiding design principles|Design]] is available for reference, and should be especially useful for those wishing to contribute.
 
 ## Libraries
-It is possible to implement dripline in whatever language/environment is most convenient (which is part of the value). We currently have a library available for [C++](https://github.com/project8/dripline/tree/develop/cpp), [golang](https://github.com/project8/dripline/tree/develop/go), and for [python](https://github.com/project8/dripline/tree/develop/python) included in this repo.  The libraries are not all equivalent, and functionality can vary between languages.
+It is possible to implement dripline in whatever language/environment is most convenient (which is part of the value). We currently have implementations available for [C++](https://github.com/project8/dripline-cpp), [golang](https://github.com/project8/dripline-go), and for [python](https://github.com/project8/dripline-python).  The libraries are not all equivalent, and functionality can vary between languages.
