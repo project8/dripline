@@ -21,8 +21,4 @@ python/dripline.sublime-workspace
 .project
 .cproject
 
-# Build directories
-cpp/build*/
-
-
 *.pyo
