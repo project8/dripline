@@ -3,7 +3,7 @@ There are several design principles which guide development. The descriptions he
 REST inspired
 =============
 
-The [description on wikipedia](http://en.wikipedia.org/wiki/Representational_state_transfer) does a great job describing the REST standard.
+The `description on wikipedia <http://en.wikipedia.org/wiki/Representational_state_transfer>`_ does a great job describing the REST standard.
 In particular, dripline stresses:
 
 1. **Client-Server Model:** Any number of "services" may be run, each acting as a server. The service can then independently respond to requests from any number of clients. Further, each resource has a specific set of responsibilities, making everything easier to maintain and new capabilities easier to deploy.  
@@ -14,4 +14,4 @@ In particular, dripline stresses:
 Forward Compatibility
 =======================
 
-While the value of backward compatibility is generally considered self-evident, dripline also strives to achieve forward compatibility. The main way that this is achieved is by requiring that if a message contains unexpected fields, they be ignored if possible. This allows us to add new fields (such as sender_info or lockout_key) and expect running services fitting the older standard to still respond to requests. Obviously use of those new fields requires an update, but having heterogeneous versions running in parallel allows rolling updates of resources with reduced down time.
+While the value of backward compatibility is generally considered self-evident, dripline also strives to achieve forward compatibility. The main way that this is achieved is by requiring that if a message contains unexpected fields, they be ignored if possible. This allows us to add new fields (such as ``sender_info`` or ``lockout_key``) and expect running services fitting the older standard to still respond to requests. Obviously use of those new fields requires an update, but having heterogeneous versions running in parallel allows rolling updates of resources with reduced down time.
