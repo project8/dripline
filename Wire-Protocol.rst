@@ -1,3 +1,7 @@
+The Wire Protocol
++++++++++++++++++
+
+
 Encoding
 ========
 
