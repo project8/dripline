@@ -42,7 +42,7 @@ extensions = [
 
 todo_include_todos = True
 
-autoclass_content = "both"
+#autoclass_content = "both"
 
 # Add any paths that contain templates here, relative to this directory.
 #templates_path = ['_templates']
@@ -223,8 +223,7 @@ latex_elements = {
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
+# (source start file, target name, title, #  author, documentclass [howto, manual, or own class]).
 #latex_documents = [
 #  ('index', 'dripline.tex', 'dripline Documentation',
 #   'The Project 8 Collaboration', 'manual'),
