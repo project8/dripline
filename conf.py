@@ -71,7 +71,7 @@ copyright = '2018, The Project 8 Collaboration'
 try:
     import subprocess
     release = subprocess.check_output(['git', 'describe', '--long']).decode('utf-8').strip()
-    version = subprocess.check_output(['git', 'describe', '--abrev=0']).decode('utf-8').strip()
+    version = subprocess.check_output(['git', 'describe', '--abbrev=0']).decode('utf-8').strip()
 except Exception as e:
     print("error message is:\n{}".format(e.message))
     version = "unknown"
