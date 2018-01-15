@@ -1,6 +1,9 @@
+===============================
+Dripline Protocol Documentation
+===============================
+
 Current Version: 2.1.0
 ======================
-
 
 Summary
 =======
@@ -17,3 +20,13 @@ Libraries
 =========
 
 It is possible to implement dripline in whatever language/environment is most convenient (which is part of the value). We currently have implementations available for `C++ <https://github.com/project8/dripline-cpp>`_, `golang <https://github.com/project8/dripline-go>`_, and for `python <https://github.com/project8/dripline-python>`_.  The libraries are not all equivalent, and functionality can vary between languages.
+
+.. toctree::
+    :maxdepth: 4
+
+    Design
+    Wire-Protocol
+    Use-Protocol
+    Versions
+    Upcoming-changes
+    Glossary
