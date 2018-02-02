@@ -1,5 +1,6 @@
+=================
 Design Principles
-+++++++++++++++++
+=================
 
 There are several design principles which guide development. The descriptions here should convey our design intent and should guide future design decisions.
 
